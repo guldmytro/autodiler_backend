@@ -262,9 +262,7 @@ CACHES = {
     }
 }
 
-# GRANT ALL PRIVILEGES ON DATABASE autodiler_db TO autodiler_user;
-# CREATE DATABASE autodiler_db;
-# ALTER ROLE autodiler_user SET client_encoding TO 'utf8';
-# ALTER ROLE autodiler_user SET default_transaction_isolation TO 'read committed';
-# ALTER ROLE autodiler_user SET timezone TO 'UTC';
-# GRANT ALL PRIVILEGES ON DATABASE autodiler_db TO autodiler_user;
+try:
+    from .local_settings import *
+except ImportError:
+    pass
