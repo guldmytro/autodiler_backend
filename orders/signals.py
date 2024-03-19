@@ -3,6 +3,7 @@ from django.dispatch import receiver
 from .models import Order
 from django.template.loader import render_to_string
 from django.conf import settings
+from django.core.mail import send_mail
 
 
 @receiver(post_save, sender=Order)
@@ -13,4 +14,10 @@ def create_profile(sender, instance, created, **kwargs):
             'order': instance,
             'base_url': base_url
         })
-        print(message)
+        subject = 'Нове замовлення'
+        to = settings.EMAIL_RECEPIENTS
+        send_mail(subject,
+                  '',
+                  'info.autodealer.ua@gmail.com',
+                  to,
+                  html_message=message)

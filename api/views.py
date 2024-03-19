@@ -76,7 +76,10 @@ class ProductViewSet(viewsets.ModelViewSet):
                                    context)
         to = settings.EMAIL_RECEPIENTS
         subject = 'Купівля в 1 клік'
-        if send_mail(subject, '', '', [to],
+        if send_mail(subject,
+                     '',
+                     'info.autodealer.ua@gmail.com',
+                     [to],
                      html_message=message) == 1:
             return Response({'status': 'ok'})
         return Response({'status': 'bad'})
@@ -133,7 +136,9 @@ class SendEmailView(APIView):
             })
             subject = 'Не знайшли потрібну деталь'
             to = settings.EMAIL_RECEPIENTS
-            if send_mail(subject, '', '', to,
+            if send_mail(subject,
+                         '',
+                         'info.autodealer.ua@gmail.com', to,
                          html_message=message) == 1:
                 return Response({'status': 'ok',
                                  'message': 'Email sent successfully'})
