@@ -1,0 +1,50 @@
+У вас нове <a href="https://{{ base_url }}{{ order.get_absolute_url }}">замовлення</a>
+
+<table>
+    <tbody>
+        <tr>
+            <th>Замовлення</th>
+            <td>{{ order.pk }}</td>
+        </tr>
+        <tr>
+            <th>Прізвище</th>
+            <td>{{ order.last_name }}</td>
+        </tr>
+        <tr>
+            <th>Ім'я</th>
+            <td>{{ order.first_name }}</td>
+        </tr>
+        <tr>
+            <th>Телефон</th>
+            <td>{{ order.phone }}</td>
+        </tr>
+        <tr>
+            <th>E-mail</th>
+            <td>{{ order.email }}</td>
+        </tr>
+        <tr>
+            <th>Доставка</th>
+            {% if order.delivery == 'nd' %}
+                <td>Нова пошта</td>
+            {% else %}
+                <td>Самовивіз</td>
+            {% endif %}
+        </tr>
+        {% if order.delivery == 'nd' %}
+            <tr>
+                <th>Адреса</th>
+                <td>{{ order.city }}, {{ order.nova_office }}</td>
+            </tr>
+        {% endif %}
+        <tr>
+            <th>Оплата</th>
+            {% if order.payment_method == 'od' %}
+                <td>При отриманні</td>
+            {% endif %}
+        </tr>
+        <tr>
+            <th>Коментар</th>
+            <td>{{ order.comment }}</td>
+        </tr>
+    </tbody>
+</table>

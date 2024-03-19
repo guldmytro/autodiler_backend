@@ -1,0 +1,11 @@
+{% block subject %}
+    Активація аккаунту на сайті {{ frontend_url }}
+{% endblock subject %}
+
+{% block html_body %}
+    <h1>Вітаємо із реєстрацією на нашому сайт {{ frontend_url }}</h1>
+    <p>Для активації Вашого аккаунту перейдіть по посиланню:</p>
+    <a href="{{ frontend_url }}/uk/account/create/confirm/{{uid}}/{{token}}">
+        {{ frontend_url }}/uk/account/create/confirm/{{uid}}/{{token}}
+    </a>
+{% endblock html_body %}
