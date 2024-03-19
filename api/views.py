@@ -79,7 +79,7 @@ class ProductViewSet(viewsets.ModelViewSet):
         if send_mail(subject,
                      '',
                      'info.autodealer.ua@gmail.com',
-                     [to],
+                     to,
                      html_message=message) == 1:
             return Response({'status': 'ok'})
         return Response({'status': 'bad'})
