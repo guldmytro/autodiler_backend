@@ -54,7 +54,10 @@ class Command(BaseCommand):
         Loop self.products
         :return: None
         """
+        cnt = 0
         for product in self.products:
+            cnt += 1
+            print(cnt)
             sku = product.get('sku')
             if sku is None:
                 continue
