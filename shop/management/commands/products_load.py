@@ -54,10 +54,7 @@ class Command(BaseCommand):
         Loop self.products
         :return: None
         """
-        cnt = 0
         for product in self.products:
-            cnt += 1
-            print(cnt)
             sku = product.get('sku')
             if sku is None:
                 continue
@@ -113,6 +110,7 @@ class Command(BaseCommand):
         try:
             response = requests.get(url)
         except requests.exceptions.ConnectionError:
+            print('bad connection')
             response = requests.get(url)
         image_name = url.split('/')[-1][:300]
         if response.status_code == 200:
