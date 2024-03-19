@@ -99,9 +99,9 @@ class Command(BaseCommand):
                 product_obj.full_clean()
             except:
                 product_obj.image_source = None
-            if product_obj.pk == 795:
-                print(product_obj.image)
-            if product_obj.image is None:
+            if product_obj.image:
+                pass
+            else:
                 print(f'Photo is none for {product_obj.pk}')
                 self.upload_image(product.get('image_link'), product_obj)
             product_obj.full_clean()
