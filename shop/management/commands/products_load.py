@@ -100,6 +100,7 @@ class Command(BaseCommand):
             except:
                 product_obj.image_source = None
             if product_obj.image is None:
+                print(f'Photo is none for {product_obj.pk}')
                 self.upload_image(product.get('image_link'), product_obj)
             product_obj.full_clean()
             product_obj.save()
