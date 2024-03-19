@@ -37,7 +37,8 @@ class Product(TranslatableModel):
                               verbose_name='Фото')
     image_source = models.URLField(
         verbose_name='Посилання на оригінальну картинку',
-        blank=True
+        blank=True,
+        null=True
     )
     quantity = models.PositiveIntegerField(blank=True,
                                            verbose_name='Кількість')

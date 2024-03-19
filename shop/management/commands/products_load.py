@@ -94,6 +94,11 @@ class Command(BaseCommand):
                 except Category.DoesNotExist:
                     print(f'category {group_source_id} does not exist')
             product_obj.params = product.get('params')
+            try:
+                product_obj.image_source = product.get('image_link')
+                product_obj.full_clean()
+            except:
+                product_obj.image_source = None
             if product_obj.image is None:
                 self.upload_image(product.get('image_link'), product_obj)
             product_obj.full_clean()
