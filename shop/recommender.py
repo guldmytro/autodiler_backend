@@ -53,7 +53,7 @@ class Recommender:
                 output_field=CharField()
             )
         ).values(
-            'id', 'translation__name',
+            'id', 'translation__name', 'slug',
             'price', 'image_src', 'sku'
             )
         )

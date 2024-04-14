@@ -54,14 +54,15 @@ class ProductViewSet(viewsets.ModelViewSet):
     filter_backends = [OrderingFilter, d_filters.DjangoFilterBackend]
     filterset_class = ProductFilter
     ordering_fields = ['created', 'price']
+    lookup_field = 'slug'
 
     @method_decorator(cache_page(60 * 60 * 2))
     def list(self, request):
         return super().list(request)
 
     @method_decorator(cache_page(60 * 60 * 2))
-    def retrieve(self, request, pk=None):
-        return super().retrieve(request, pk)
+    def retrieve(self, request, slug=None):
+        return super().retrieve(request, slug)
 
     @action(detail=True, url_path='buy', methods=['post'],
             permission_classes=[CanPost])
@@ -99,14 +100,15 @@ class CategoryViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAdminOrReadOnly,)
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+    lookup_field = 'slug'
 
     @method_decorator(cache_page(60 * 60 * 2))
     def list(self, request):
         return super().list(request)
 
     @method_decorator(cache_page(60 * 60 * 2))
-    def retrieve(self, request, pk=None):
-        return super().retrieve(request, pk)
+    def retrieve(self, request, slug=None):
+        return super().retrieve(request, slug)
 
     @method_decorator(cache_page(60 * 60 * 2))
     @action(detail=False, url_path='dump', methods=['get'])

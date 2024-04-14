@@ -15,13 +15,13 @@ class CategorySerializer(DynamicFieldsMixin, serializers.ModelSerializer):
 
     class Meta:
         model = Category
-        fields = ('id', 'name_ua', 'name_ru', 'parents', 'tree')
+        fields = ('id', 'name_ua', 'name_ru', 'slug', 'parents', 'tree')
 
     def get_parents(self, obj):
         ancestors = obj.get_ancestors()
         # Convert queryset to a list of dictionaries
         parents_list = [{'id': ancestor.id, 'name_ua': ancestor.name_ua,
-                         'name_ru': ancestor.name_ru} for ancestor in
+                         'name_ru': ancestor.name_ru, 'slug': ancestor.slug} for ancestor in
                         ancestors]
         return parents_list
 
@@ -35,7 +35,7 @@ class ProductSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ('id', 'sku', 'name', 'description', 'price', 'image',
+        fields = ('id', 'sku', 'name', 'slug', 'description', 'price', 'image',
                   'quantity', 'category', 'producer', 'country',
                   'params', 'recommended_products')
 
