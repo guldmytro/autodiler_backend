@@ -1,7 +1,6 @@
 from django.core.management import BaseCommand
 import csv
 import requests
-import json
 from shop.models import Product, Category
 from django.core.files.base import ContentFile
 
