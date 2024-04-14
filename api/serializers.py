@@ -127,3 +127,15 @@ class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = ('first_name', 'last_name', 'phone')
+
+
+class ProductSitemapSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = ('slug', 'updated')
+
+
+class CategorySitemapSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ('slug', 'updated')

@@ -17,6 +17,7 @@ class Category(MP_Node):
     image = models.ImageField(upload_to='terms/%Y/%m/%d/', blank=True,
                               null=True, verbose_name='Лого')
     node_order_by = ['name_ua']
+    updated = models.DateTimeField(auto_now=True)
 
     class Meta:
         verbose_name = 'Категорія'
@@ -24,6 +25,9 @@ class Category(MP_Node):
 
     def __str__(self):
         return self.name_ua
+
+    def get_absolute_url(self):
+        return f'{settings.CORS_ALLOWED_ORIGINS[3]}/uk/product-cat/{self.slug}'
 
 
 class Product(TranslatableModel):
@@ -55,6 +59,7 @@ class Product(TranslatableModel):
                                blank=True)
     params = models.JSONField(verbose_name='Параметри', blank=True)
     created = models.DateTimeField(auto_now_add=True, verbose_name='Створено')
+    updated = models.DateTimeField(auto_now=True)
 
     class Meta:
         verbose_name = 'Товар'
@@ -69,6 +74,6 @@ class Product(TranslatableModel):
         return self.name
 
     def get_absolute_url(self):
-        return f'{settings.CORS_ALLOWED_ORIGINS[3]}/uk/product/{self.pk}'
+        return f'{settings.CORS_ALLOWED_ORIGINS[3]}/uk/product/{self.slug}'
 
 

@@ -8,7 +8,8 @@ from blog.models import Post
 from profiles.models import Profile
 from .serializers import (ProductSerializer, OrderSerializer,
                           CategorySerializer, EmailSerializer, FaqSerializer,
-                          PostSerializer, ProfileSerializer, MyOrderSerializer)
+                          PostSerializer, ProfileSerializer, MyOrderSerializer,
+                          ProductSitemapSerializer, CategorySitemapSerializer)
 from .permissions import IsAdminOrReadOnly, IsAdminOrReadOrPost, CanPost
 from rest_framework.filters import OrderingFilter
 from django_filters import rest_framework as d_filters
@@ -18,6 +19,11 @@ from django.conf import settings
 from django.core.mail import send_mail
 from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
+from rest_framework import generics
+from rest_framework.pagination import PageNumberPagination
+
+class NoPagination(PageNumberPagination):
+    page_size = None
 
 
 class ProductFilter(d_filters.FilterSet):
@@ -180,3 +186,16 @@ class MyOrderViewSet(viewsets.ModelViewSet):
         user = self.request.user
         return Order.objects.filter(user=user)
 
+
+class ProductSitemap(generics.ListAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSitemapSerializer
+    permission_classes = (IsAdminOrReadOnly,)
+    pagination_class = NoPagination
+
+
+class CategorySitemap(generics.ListAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySitemapSerializer
+    permission_classes = (IsAdminOrReadOnly,)
+    pagination_class = NoPagination

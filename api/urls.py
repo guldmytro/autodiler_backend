@@ -1,7 +1,7 @@
 from rest_framework.routers import SimpleRouter
 from .views import (ProductViewSet, OrderViewSet, CategoryViewSet,
                     SendEmailView, FaqViewSet, BlogViewSet, ProfileView,
-                    MyOrderViewSet)
+                    MyOrderViewSet, ProductSitemap, CategorySitemap)
 from django.urls import path, include
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -27,5 +27,9 @@ urlpatterns += [
          name='token_blacklist'),
     path('profiles/me/', ProfileView.as_view(), name='profile'),
     path(r'auth/', include('djoser.urls')),
+    path(r'products-sitemap/', ProductSitemap.as_view(),
+         name='product-sitemap'),
+    path(r'categories-sitemap/', CategorySitemap.as_view(),
+         name='categories-sitemap'),
 ]
 
