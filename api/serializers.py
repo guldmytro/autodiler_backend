@@ -31,12 +31,13 @@ class CategorySerializer(DynamicFieldsMixin, serializers.ModelSerializer):
 
 class ProductSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     category = CategorySerializer()
+    term_slug = serializers.SerializerMethodField()
     recommended_products = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
         fields = ('id', 'sku', 'name', 'slug', 'description', 'price', 'image',
-                  'quantity', 'category', 'producer', 'country',
+                  'quantity', 'term_slug', 'category', 'producer', 'country',
                   'params', 'recommended_products')
 
     def get_recommended_products(self, obj):
@@ -44,6 +45,12 @@ class ProductSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
         r = Recommender()
         return r.suggest_products_for([obj], 12,
                                       request=request)
+
+    def get_term_slug(self, obj):
+        try:
+            return obj.category.slug
+        except:
+            return None
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
@@ -130,12 +137,23 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 
 class ProductSitemapSerializer(serializers.ModelSerializer):
+    term_slug = serializers.SerializerMethodField()
+
     class Meta:
         model = Product
-        fields = ('slug', 'updated')
+        fields = ('slug', 'updated', 'term_slug')
+
+    def get_term_slug(self, obj):
+        try:
+            return obj.category.slug
+        except:
+            return None
 
 
 class CategorySitemapSerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ('slug', 'updated')
+
+
+

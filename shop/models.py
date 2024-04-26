@@ -52,7 +52,7 @@ class Product(TranslatableModel):
                                            verbose_name='Кількість')
     category = models.ForeignKey(Category, on_delete=models.PROTECT,
                                  related_name='products',
-                                 verbose_name='Категорія', blank=True)
+                                 verbose_name='Категорія')
     producer = models.CharField(max_length=50, verbose_name='Виробник',
                                 blank=True)
     country = models.CharField(max_length=20, verbose_name='Країна виробник',
@@ -74,6 +74,6 @@ class Product(TranslatableModel):
         return self.name
 
     def get_absolute_url(self):
-        return f'{settings.CORS_ALLOWED_ORIGINS[3]}/uk/product/{self.slug}'
+        return f'{settings.CORS_ALLOWED_ORIGINS[3]}/uk/product-cat/{self.category.slug}/{self.slug}'
 
 
