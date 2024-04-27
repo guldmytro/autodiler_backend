@@ -9,7 +9,8 @@ from profiles.models import Profile
 from .serializers import (ProductSerializer, OrderSerializer,
                           CategorySerializer, EmailSerializer, FaqSerializer,
                           PostSerializer, ProfileSerializer, MyOrderSerializer,
-                          ProductSitemapSerializer, CategorySitemapSerializer)
+                          ProductSitemapSerializer, CategorySitemapSerializer,
+                          SeoSerializer)
 from .permissions import IsAdminOrReadOnly, IsAdminOrReadOrPost, CanPost
 from rest_framework.filters import OrderingFilter
 from django_filters import rest_framework as d_filters
@@ -21,6 +22,8 @@ from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
 from rest_framework import generics
 from rest_framework.pagination import PageNumberPagination
+from seo.models import SeoItem
+
 
 class NoPagination(PageNumberPagination):
     page_size = None
@@ -199,3 +202,19 @@ class CategorySitemap(generics.ListAPIView):
     serializer_class = CategorySitemapSerializer
     permission_classes = (IsAdminOrReadOnly,)
     pagination_class = NoPagination
+
+
+class SeoFilter(d_filters.FilterSet):
+    class Meta:
+        model = SeoItem
+        fields = ['link']
+
+
+class SeoAPiView(generics.ListAPIView):
+    queryset = SeoItem.objects.all()
+    permission_classes = (IsAdminOrReadOnly,)
+    pagination_class = NoPagination
+    serializer_class = SeoSerializer
+    filter_backends = [OrderingFilter, d_filters.DjangoFilterBackend]
+    filterset_class = SeoFilter
+

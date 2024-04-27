@@ -7,6 +7,7 @@ from rest_framework import serializers
 from drf_dynamic_fields import DynamicFieldsMixin
 from shop.recommender import Recommender
 from django.contrib.auth.models import User
+from seo.models import SeoItem
 
 
 class CategorySerializer(DynamicFieldsMixin, serializers.ModelSerializer):
@@ -154,6 +155,13 @@ class CategorySitemapSerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ('slug', 'updated')
+
+
+class SeoSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = SeoItem
+        fields = '__all__'
 
 
 
