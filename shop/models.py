@@ -18,6 +18,8 @@ class Category(MP_Node):
                               null=True, verbose_name='Лого')
     node_order_by = ['name_ua']
     updated = models.DateTimeField(auto_now=True)
+    is_car_brand = models.BooleanField(verbose_name='Бренд машины?',
+                                       default=False)
 
     class Meta:
         verbose_name = 'Категорія'
