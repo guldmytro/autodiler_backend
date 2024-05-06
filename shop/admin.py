@@ -8,6 +8,7 @@ from .models import Category, Product
 @admin.register(Category)
 class CategoryAdmin(TreeAdmin, TranslatableAdmin):
     form = movenodeform_factory(Category)
+    search_fields = ['name_ua', 'name_ru']
 
 
 @admin.register(Product)
