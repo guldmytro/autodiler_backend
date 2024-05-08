@@ -266,3 +266,8 @@ try:
     from .local_settings import *
 except ImportError:
     pass
+
+# database trigram
+# sudo -i -u postgres
+# psql <database>
+# CREATE EXTENSION pg_trgm;

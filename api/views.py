@@ -23,6 +23,7 @@ from django.utils.decorators import method_decorator
 from rest_framework import generics
 from rest_framework.pagination import PageNumberPagination
 from seo.models import SeoItem
+from django.contrib.postgres.search import TrigramSimilarity
 
 
 class NoPagination(PageNumberPagination):
@@ -32,6 +33,7 @@ class NoPagination(PageNumberPagination):
 class ProductFilter(d_filters.FilterSet):
     id = d_filters.CharFilter(method='filters_by_ids')
     category = d_filters.CharFilter(method='filters_by_category_id__in')
+    s = d_filters.CharFilter(method='filters_by_query')
 
     def filters_by_ids(self, queryset, name, value):
         ids = value.split(',')
@@ -48,9 +50,14 @@ class ProductFilter(d_filters.FilterSet):
         except Category.DoesNotExist:
             return queryset.none()
 
+    def filters_by_query(self, queryset, name, value):
+        return queryset.annotate(
+            similarity=TrigramSimilarity('translation__name', value)
+        ).filter(similarity__gt=0.2).order_by('-similarity')
+
     class Meta:
         model = Product
-        fields = ['id', 'category']
+        fields = ['id', 'category', 's']
 
 
 class ProductViewSet(viewsets.ModelViewSet):
