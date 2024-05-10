@@ -34,6 +34,11 @@ class ProductFilter(d_filters.FilterSet):
     id = d_filters.CharFilter(method='filters_by_ids')
     category = d_filters.CharFilter(method='filters_by_category_id__in')
     s = d_filters.CharFilter(method='filters_by_query')
+    language_code = None
+
+    def __init__(self, data=None, queryset=None, *, request=None, prefix=None):
+        self.language_code = request.LANGUAGE_CODE if request else 'uk'
+        super().__init__(data, queryset, request=request, prefix=prefix)
 
     def filters_by_ids(self, queryset, name, value):
         ids = value.split(',')
@@ -51,9 +56,10 @@ class ProductFilter(d_filters.FilterSet):
             return queryset.none()
 
     def filters_by_query(self, queryset, name, value):
-        return queryset.annotate(
+        f_qs = queryset.filter(translation__language_code=self.language_code).annotate(
             similarity=TrigramSimilarity('translation__name', value)
-        ).filter(similarity__gt=0.2).order_by('-similarity')
+        ).filter(similarity__gt=0.1).order_by('-similarity')
+        return f_qs
 
     class Meta:
         model = Product

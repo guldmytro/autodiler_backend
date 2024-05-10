@@ -7,6 +7,9 @@ import math
 
 class HeaderLimitOffsetPagination(LimitOffsetPagination):
     def paginate_queryset(self, queryset, request, view=None):
+        for p in queryset:
+            pass
+
         self.use_envelope = False
         if str(request.GET.get('envelope')).lower() in ['true', 1]:
             self.use_envelope = True
