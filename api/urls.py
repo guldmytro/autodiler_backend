@@ -1,8 +1,8 @@
 from rest_framework.routers import SimpleRouter
 from .views import (ProductViewSet, OrderViewSet, CategoryViewSet,
-                    SendEmailView, FaqViewSet, BlogViewSet, ProfileView,
+                    SendEmailView, SendDSEmailView, FaqViewSet, BlogViewSet, ProfileView,
                     MyOrderViewSet, ProductSitemap, CategorySitemap,
-                    SeoAPiView)
+                    SeoAPiView, TakeOfferEmailView)
 from django.urls import path, include
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -22,6 +22,8 @@ router.register(r'posts', BlogViewSet, basename='posts')
 urlpatterns = router.urls
 urlpatterns += [
     path('feadback/', SendEmailView.as_view(), name='feadback'),
+    path('ds-1/', SendDSEmailView.as_view(), name='ds-1'),
+    path('ds-2/', TakeOfferEmailView.as_view(), name='ds-2'),
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('token/blacklist/', TokenBlacklistView.as_view(),

@@ -10,7 +10,8 @@ from .serializers import (ProductSerializer, OrderSerializer,
                           CategorySerializer, EmailSerializer, FaqSerializer,
                           PostSerializer, ProfileSerializer, MyOrderSerializer,
                           ProductSitemapSerializer, CategorySitemapSerializer,
-                          SeoSerializer)
+                          SeoSerializer, DropshippingEmailSerializer,
+                          TakeOfferEmailSerializer)
 from .permissions import IsAdminOrReadOnly, IsAdminOrReadOrPost, CanPost
 from rest_framework.filters import OrderingFilter
 from django_filters import rest_framework as d_filters
@@ -159,6 +160,66 @@ class SendEmailView(APIView):
                 'phone': phone
             })
             subject = 'Не знайшли потрібну деталь'
+            to = settings.EMAIL_RECEPIENTS
+            if send_mail(subject,
+                         '',
+                         'info.autodealer.ua@gmail.com', to,
+                         html_message=message) == 1:
+                return Response({'status': 'ok',
+                                 'message': 'Email sent successfully'})
+            return Response({'status': 'bad'},
+                            status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(serializer.errors,
+                            status=status.HTTP_400_BAD_REQUEST)
+
+
+class SendDSEmailView(APIView):
+    permission_classes = [CanPost,]
+
+    def post(self, request, *args, **kwargs):
+        serializer = DropshippingEmailSerializer(data=request.data)
+        if serializer.is_valid():
+            email = serializer.validated_data['email']
+            phone = serializer.validated_data['phone']
+            message = render_to_string('emails/dropshipping-feadback.html', {
+                'email': email,
+                'phone': phone
+            })
+            subject = 'Користувач хоче отримати прайс-лист для партнерів'
+            to = settings.EMAIL_RECEPIENTS
+            if send_mail(subject,
+                         '',
+                         'info.autodealer.ua@gmail.com', to,
+                         html_message=message) == 1:
+                return Response({'status': 'ok',
+                                 'message': 'Email sent successfully'})
+            return Response({'status': 'bad'},
+                            status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(serializer.errors,
+                            status=status.HTTP_400_BAD_REQUEST)
+
+
+class TakeOfferEmailView(APIView):
+    permission_classes = [CanPost,]
+
+    def post(self, request, *args, **kwargs):
+        serializer = TakeOfferEmailSerializer(data=request.data)
+        if serializer.is_valid():
+            name = serializer.validated_data['name']
+            phone = serializer.validated_data['phone']
+            city = serializer.validated_data['city']
+            client_type = serializer.validated_data['clientType']
+            product_type = serializer.validated_data['productType']
+            message = render_to_string('emails/take-offer.html', {
+                'name': name,
+                'phone': phone,
+                'city': city,
+                'client_type': client_type,
+                'product_type': product_type
+            })
+            subject = 'Користувач хоче отримати прайс-лист для партнерів'
             to = settings.EMAIL_RECEPIENTS
             if send_mail(subject,
                          '',

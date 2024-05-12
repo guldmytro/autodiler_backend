@@ -117,6 +117,19 @@ class EmailSerializer(serializers.Serializer):
     phone = serializers.CharField()
 
 
+class DropshippingEmailSerializer(serializers.Serializer):
+    email = serializers.CharField()
+    phone = serializers.CharField()
+
+
+class TakeOfferEmailSerializer(serializers.Serializer):
+    clientType = serializers.CharField()
+    productType = serializers.CharField()
+    name = serializers.CharField()
+    phone = serializers.CharField()
+    city = serializers.CharField()
+
+
 class PostSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     class Meta:
         model = Post
