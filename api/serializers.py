@@ -164,6 +164,21 @@ class ProductSitemapSerializer(serializers.ModelSerializer):
             return None
 
 
+class ProductMerchantSerializer(serializers.ModelSerializer):
+    term_slug = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Product
+        fields = ('id', 'name', 'description', 'slug', 'term_slug', 
+                  'image', 'quantity', 'price', 'producer')
+
+    def get_term_slug(self, obj):
+        try:
+            return obj.category.slug
+        except:
+            return None
+
+
 class CategorySitemapSerializer(serializers.ModelSerializer):
     class Meta:
         model = Category

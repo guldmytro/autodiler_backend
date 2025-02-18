@@ -1,8 +1,5 @@
 from rest_framework.routers import SimpleRouter
-from .views import (ProductViewSet, OrderViewSet, CategoryViewSet,
-                    SendEmailView, SendDSEmailView, FaqViewSet, BlogViewSet, ProfileView,
-                    MyOrderViewSet, ProductSitemap, CategorySitemap,
-                    SeoAPiView, TakeOfferEmailView)
+from .views import *
 from django.urls import path, include
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -32,6 +29,8 @@ urlpatterns += [
     path(r'auth/', include('djoser.urls')),
     path(r'products-sitemap/', ProductSitemap.as_view(),
          name='product-sitemap'),
+    path(r'products-merchant/', ProductMerchant.as_view(),
+         name='product-merchant'),
     path(r'categories-sitemap/', CategorySitemap.as_view(),
          name='categories-sitemap'),
     path(r'seo/', SeoAPiView.as_view(), name='seo')

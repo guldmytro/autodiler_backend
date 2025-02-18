@@ -6,12 +6,7 @@ from orders.models import Order
 from faq.models import Faq
 from blog.models import Post
 from profiles.models import Profile
-from .serializers import (ProductSerializer, OrderSerializer,
-                          CategorySerializer, EmailSerializer, FaqSerializer,
-                          PostSerializer, ProfileSerializer, MyOrderSerializer,
-                          ProductSitemapSerializer, CategorySitemapSerializer,
-                          SeoSerializer, DropshippingEmailSerializer,
-                          TakeOfferEmailSerializer)
+from .serializers import *
 from .permissions import IsAdminOrReadOnly, IsAdminOrReadOrPost, CanPost
 from rest_framework.filters import OrderingFilter
 from django_filters import rest_framework as d_filters
@@ -269,6 +264,17 @@ class ProductSitemap(generics.ListAPIView):
     serializer_class = ProductSitemapSerializer
     permission_classes = (IsAdminOrReadOnly,)
     pagination_class = NoPagination
+
+
+class ProductMerchant(generics.ListAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductMerchantSerializer
+    permission_classes = (IsAdminOrReadOnly,)
+    pagination_class = NoPagination
+
+    @method_decorator(cache_page(60 * 60 * 12))
+    def list(self, request):
+        return super().list(request)
 
 
 class CategorySitemap(generics.ListAPIView):
