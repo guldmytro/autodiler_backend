@@ -272,3 +272,6 @@ except ImportError:
 # sudo -i -u postgres
 # psql <database>
 # CREATE EXTENSION pg_trgm;
+
+
+CML_PROJECT_PIPELINES = 'api.cml_pipelines'
