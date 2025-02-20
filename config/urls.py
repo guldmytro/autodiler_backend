@@ -21,6 +21,7 @@ from django.conf import settings
 from django.conf.urls.i18n import i18n_patterns
 
 urlpatterns = i18n_patterns(
+    path('cml/', include('cml.urls')),
     path('api/v1/', include('api.urls')),
     path('ckeditor/', include('ckeditor_uploader.urls')),
     path('admin/', admin.site.urls),

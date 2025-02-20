@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'redisboard',
     'ckeditor',
     'ckeditor_uploader',
+    'cml',
     # Local
     'profiles.apps.ProfilesConfig',
     'shop.apps.ShopConfig',
