@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'redisboard',
     'ckeditor',
     'ckeditor_uploader',
+    'cml',
     # Local
     'profiles.apps.ProfilesConfig',
     'shop.apps.ShopConfig',
@@ -272,5 +273,8 @@ except ImportError:
 # sudo -i -u postgres
 # psql <database>
 # CREATE EXTENSION pg_trgm;
+
+
+CML_PROJECT_PIPELINES = 'api.cml_pipelines'
 
 

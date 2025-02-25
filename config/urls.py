@@ -27,6 +27,10 @@ urlpatterns = i18n_patterns(
     path('__debug__/', include('debug_toolbar.urls')),
 )
 
+urlpatterns += [
+    path('cml/', include('cml.urls'))
+]
+
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL,
                           document_root=settings.MEDIA_ROOT)
