@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'faq.apps.FaqConfig',
     'blog.apps.BlogConfig',
     'seo.apps.SeoConfig',
+    'output.apps.OutputConfig',
 ]
 
 MIDDLEWARE = [
