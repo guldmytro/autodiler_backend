@@ -11,7 +11,7 @@ To activate your pipelines add the following to your settings.py:
 import decimal
 from cml.items import Order, OrderItem
 import orders.models as prod
-import json
+from shop.models import Product
 
 
 class GroupPipeline(object):
@@ -110,12 +110,21 @@ class OfferPipeline(object):
     """
     def process_item(self, item):
 
-        # Write to a file
-        with open("offer.json", "w", encoding="utf-8") as f:
-            f.write(f'{item.id}-{item.name}-{item.sku_id}-{item.code_1c}')
-            for price in item.prices:
-                f.write(str(price.price_for_sku))
+        sku = item.code_1c
 
+        try:
+            p = Product.objects.get(sku=sku)
+            if len(item.prices) > 0:
+                try:
+                    new_price = int(item.prices[0].price_for_sku)
+                    if p.price != new_price:
+                        p.price = new_price
+                        p.save()
+                except:
+                    pass
+        except Product.DoesNotExist:
+            pass
+        
         return item
 
 
