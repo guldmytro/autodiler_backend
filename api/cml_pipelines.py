@@ -108,12 +108,10 @@ class OfferPipeline(object):
     prices
     """
     def process_item(self, item):
-        # Convert item to a JSON string
-        # item_json = json.dumps(dict(item), indent=4, ensure_ascii=False)
 
         # Write to a file
         with open("offer.json", "w", encoding="utf-8") as f:
-            f.write(str(item))
+            f.write(f'{item.id}-{item.name}-{item.sku_id}')
 
         return item
 
