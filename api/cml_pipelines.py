@@ -113,7 +113,7 @@ class OfferPipeline(object):
 
         # Write to a file
         with open("offer.json", "w", encoding="utf-8") as f:
-            f.write(item)
+            f.write(str(item))
 
         return item
 
