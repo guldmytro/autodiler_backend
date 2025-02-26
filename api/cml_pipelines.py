@@ -114,7 +114,7 @@ class OfferPipeline(object):
         with open("offer.json", "w", encoding="utf-8") as f:
             f.write(f'{item.id}-{item.name}-{item.sku_id}-{item.code_1c}')
             for price in item.prices:
-                f.write(price.price_for_sku)
+                f.write(str(price.price_for_sku))
 
         return item
 
