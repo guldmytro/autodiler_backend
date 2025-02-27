@@ -114,6 +114,16 @@ class OfferPipeline(object):
 
         try:
             p = Product.objects.get(sku=sku)
+            try:
+                quantity = int(item.quantity)
+                if quantity < 0:
+                    quantity = 0
+                if p.quantity != quantity:
+                    p.quantity = quantity
+                    p.save()
+            except:
+                pass
+            
             if len(item.prices) > 0:
                 try:
                     new_price = int(item.prices[0].price_for_sku)
