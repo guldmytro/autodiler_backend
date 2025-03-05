@@ -28,7 +28,8 @@ urlpatterns = i18n_patterns(
 )
 
 urlpatterns += [
-    path('cml/', include('cml.urls'))
+    path('cml/', include('cml.urls')),
+    path('payment/', include('payments.urls')),
 ]
 
 if settings.DEBUG:

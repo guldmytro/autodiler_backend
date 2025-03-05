@@ -22,6 +22,7 @@ class Order(models.Model):
 
     class Payment(models.TextChoices):
         ON_DELIVERY = 'od', 'При отриманні'
+        ONLILE = 'ol', 'Онлайн'
 
     status = models.CharField(max_length=2,
                               choices=Status.choices,
@@ -48,7 +49,10 @@ class Order(models.Model):
                                       choices=Payment.choices,
                                       default=Payment.ON_DELIVERY,
                                       verbose_name='Спосіб оплати')
+ 
     paid = models.BooleanField(default=False, verbose_name='Оплачено')
+    liqpay_id = models.CharField(max_length=250, blank=True, null=True)
+ 
     comment = models.TextField(max_length=500, blank=True,
                                verbose_name='Коментар клієнта')
 
