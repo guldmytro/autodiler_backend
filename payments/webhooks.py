@@ -24,7 +24,7 @@ def liqpay_webhook(request):
     expected_signature = liqpay.str_to_sign(settings.LIQPAY_PRIVATE_KEY + data + settings.LIQPAY_PRIVATE_KEY)
     
     if signature != expected_signature:
-        logger.warning("Ошибка валидации подписи от LiqPay")
+        logger.warning(f"Ошибка валидации подписи от LiqPay. Signature: {signature} != Expected signature: {expected_signature}")
         return HttpResponse(status=400)
     
     response = liqpay.decode_data_from_str(data)
