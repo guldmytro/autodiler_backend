@@ -69,12 +69,13 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 class OrderSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     items = OrderItemSerializer(many=True)
+    total_cost = serializers.SerializerMethodField()
 
     class Meta:
         model = Order
         fields = ('id', 'status', 'first_name', 'last_name', 'phone', 'email',
-                  'delivery', 'city', 'nova_office', 'payment_method',
-                  'comment', 'user_uuid', 'items', 'user')
+                  'delivery', 'city', 'nova_office', 'payment_method', 'paid',
+                  'comment', 'user_uuid', 'items', 'user', 'total_cost')
 
     def create(self, validated_data):
         items_data = validated_data.pop('items')
@@ -87,6 +88,8 @@ class OrderSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
         r.products_bought(p_bought)
         return order
 
+    def get_total_cost(self, obj):
+        return obj.get_total_cost()
 
 class MyOrderItemSerializer(serializers.ModelSerializer):
     product = ProductSerializer()
