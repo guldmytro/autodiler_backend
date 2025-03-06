@@ -268,7 +268,9 @@ CACHES = {
 try:
     from .local_settings import *
 except ImportError:
-    pass
+    # LiqPay
+    LIQPAY_PUBLIC_KEY = 'some'
+    LIQPAY_PRIVATE_KEY = 'key'
 
 # database trigram
 # sudo -i -u postgres
@@ -278,6 +280,4 @@ except ImportError:
 
 CML_PROJECT_PIPELINES = 'api.cml_pipelines'
 
-# LiqPay
-LIQPAY_PUBLIC_KEY = 'some'
-LIQPAY_PRIVATE_KEY = 'key'
+
