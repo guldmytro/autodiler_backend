@@ -12,6 +12,8 @@ logger = logging.getLogger(__name__)
 @csrf_exempt
 @require_POST
 def liqpay_webhook(request):
+    logger.info(f'LIQPAY_PUBLIC_KEY={settings.LIQPAY_PUBLIC_KEY}')
+    logger.info(f'LIQPAY_PRIVATE_KEY={settings.LIQPAY_PRIVATE_KEY}')
     liqpay = LiqPay(settings.LIQPAY_PUBLIC_KEY, settings.LIQPAY_PRIVATE_KEY)
     
     data = request.POST.get('data', '')
