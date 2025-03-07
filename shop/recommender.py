@@ -54,7 +54,7 @@ class Recommender:
             )
         ).values(
             'id', 'translation__name', 'slug',
-            'price', 'image_src', 'sku'
+            'price', 'image_src', 'sku', 'quantity'
             )
         )
 
