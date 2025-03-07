@@ -74,7 +74,7 @@ class OrderSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = ('id', 'status', 'first_name', 'last_name', 'phone', 'email',
-                  'delivery', 'city', 'nova_office', 'payment_method', 'paid',
+                  'delivery', 'city', 'nova_office', 'address', 'payment_method', 'paid',
                   'comment', 'user_uuid', 'items', 'user', 'total_cost')
 
     def create(self, validated_data):

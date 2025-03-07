@@ -17,7 +17,8 @@ class Order(models.Model):
         CANCELED = 'cl', 'Скасовано'
 
     class Delivery(models.TextChoices):
-        NOVA_DELIVERY = 'nd', 'Нова пошта'
+        NOVA_DELIVERY = 'nd', 'Самовивіз із Нової пошти'
+        NOVA_DELIVERY2 = 'xd', 'Кур\'єром Нової Пошти'
         PICKUP = 'pu', 'Самовивіз'
 
     class Payment(models.TextChoices):
@@ -44,6 +45,8 @@ class Order(models.Model):
                             verbose_name='Населений пункт')
     nova_office = models.CharField(max_length=255, blank=True,
                                    verbose_name='Відділення Нової пошти')
+    address = models.CharField(max_length=500, blank=True, null=True,
+                               verbose_name='Адреса кур\'єрської доставки')
 
     payment_method = models.CharField(max_length=2,
                                       choices=Payment.choices,
