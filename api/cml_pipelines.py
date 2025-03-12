@@ -87,7 +87,7 @@ class ProductPipeline(object):
     additional_fields
     """
     def process_item(self, item):
-        logger.info(f'Завантаження товару із sku {item.sku_id}')
+        logger.info(f'Завантаження товару {item.sku_id} - {item.name}')
         pass
 
 
