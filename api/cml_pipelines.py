@@ -12,6 +12,10 @@ import decimal
 from cml.items import Order, OrderItem
 import orders.models as prod
 from shop.models import Product
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 
 class GroupPipeline(object):
@@ -83,6 +87,7 @@ class ProductPipeline(object):
     additional_fields
     """
     def process_item(self, item):
+        logger.info(f'Завантаження товару із sku {item.sku_id}')
         pass
 
 
