@@ -48,3 +48,9 @@ def liqpay_webhook(request):
             return HttpResponse(status=404)
 
     return JsonResponse({"status": "ok"})
+
+
+@csrf_exempt
+@require_POST
+def monobank_webhook(request):
+    pass
