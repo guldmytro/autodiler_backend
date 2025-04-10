@@ -74,11 +74,11 @@ class ProductViewSet(viewsets.ModelViewSet):
     ordering_fields = ['created', 'price']
     lookup_field = 'slug'
 
-    @method_decorator(cache_page(60 * 60 * 1))
+    @method_decorator(cache_page(60 * 15))
     def list(self, request):
         return super().list(request)
 
-    @method_decorator(cache_page(60 * 60 * 1))
+    @method_decorator(cache_page(60 * 15))
     def retrieve(self, request, slug=None):
         return super().retrieve(request, slug)
 
@@ -272,7 +272,7 @@ class ProductMerchant(generics.ListAPIView):
     permission_classes = (IsAdminOrReadOnly,)
     pagination_class = NoPagination
 
-    @method_decorator(cache_page(60 * 60 * 12))
+    @method_decorator(cache_page(60 * 152))
     def list(self, request):
         return super().list(request)
 
