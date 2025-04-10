@@ -107,7 +107,7 @@ class ProductPipeline(object):
     """
     def process_item(self, item):
         logger.info(f'Завантаження товару {item.sku}')
-        
+
         try:
             product_obj = Product.objects.get(item.sku)
         except Product.DoesNotExist:
@@ -125,11 +125,11 @@ class ProductPipeline(object):
         product_obj.producer = item.producer
         product_obj.vin = item.vin
         
-        try:
-            c = get_or_create_category_tree(item)
-            product_obj.category = c
-        except:
-            logger.error(f'Category creating error for product with sku {item.sku}')
+        # try:
+        #     c = get_or_create_category_tree(item)
+        #     product_obj.category = c
+        # except:
+        #     logger.error(f'Category creating error for product with sku {item.sku}')
         try:
             product_obj.full_clean()
             product_obj.save()
