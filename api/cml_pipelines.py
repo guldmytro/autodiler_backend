@@ -106,22 +106,8 @@ class ProductPipeline(object):
     g3_name
     """
     def process_item(self, item):
-        logger.info(f'Завантаження товару:')
-        logger.info(f'name: {item.name}')
-        logger.info(f'name_ru: {item.name_ru}')
-        logger.info(f'sku: {item.sku}')
-        logger.info(f'vin: {item.vin}')
-        logger.info(f'producer: {item.producer}')
-        logger.info(f'params: {item.params}')
-        logger.info(f'params_ru: {item.params_ru}')
-        logger.info(f'desc: {item.desc}')
-        logger.info(f'desc_ru: {item.desc_ru}')
-        logger.info(f'g1_id: {item.g1_id}')
-        logger.info(f'g1_name: {item.g1_name}')
-        logger.info(f'g2_id: {item.g2_id}')
-        logger.info(f'g2_name: {item.g2_name}')
-        logger.info(f'g3_id: {item.g3_id}')
-        logger.info(f'g3_name: {item.g3_name}')
+        logger.info(f'Завантаження товару {item.sku}')
+        
         try:
             product_obj = Product.objects.get(item.sku)
         except Product.DoesNotExist:
@@ -149,6 +135,7 @@ class ProductPipeline(object):
             product_obj.save()
         except Exception as e:
             logger.error(f'Product saving error for {item.sku}: {e}')
+        return item
 
 
 class PriceTypePipeline(object):
