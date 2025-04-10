@@ -85,9 +85,41 @@ class ProductPipeline(object):
     tax_name
     image_path
     additional_fields
+
+    Avtodiler fields:
+    name
+    name_ru
+    sku
+    vin
+    producer
+    params
+    params_ru
+    desc
+    desc_ru
+    g1_id
+    g1_name
+    g2_id
+    g2_name
+    g3_id
+    g3_name
     """
     def process_item(self, item):
-        logger.info(f'Завантаження товару {item.sku_id} - {item.name}')
+        logger.info(f'Завантаження товару:')
+        logger.info(f'name: {item.name}')
+        logger.info(f'name_ru: {item.name_ru}')
+        logger.info(f'sku: {item.sku}')
+        logger.info(f'vin: {item.vin}')
+        logger.info(f'producer: {item.producer}')
+        logger.info(f'params: {item.params}')
+        logger.info(f'params_ru: {item.params_ru}')
+        logger.info(f'desc: {item.desc}')
+        logger.info(f'desc_ru: {item.desc_ru}')
+        logger.info(f'g1_id: {item.g1_id}')
+        logger.info(f'g1_name: {item.g1_name}')
+        logger.info(f'g2_id: {item.g2_id}')
+        logger.info(f'g2_name: {item.g2_name}')
+        logger.info(f'g3_id: {item.g3_id}')
+        logger.info(f'g3_name: {item.g3_name}')
         pass
 
 
