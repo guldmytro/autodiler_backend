@@ -272,7 +272,7 @@ class ProductMerchant(generics.ListAPIView):
     permission_classes = (IsAdminOrReadOnly,)
     pagination_class = NoPagination
 
-    @method_decorator(cache_page(60 * 152))
+    @method_decorator(cache_page(60 * 60 * 24))
     def list(self, request):
         return super().list(request)
 
