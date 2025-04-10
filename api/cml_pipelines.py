@@ -133,8 +133,8 @@ class ProductPipeline(object):
         try:
             c = get_or_create_category_tree(item)
             product_obj.category = c
-        except:
-            logger.error(f'Category creating error for product with sku {item.sku}')
+        except Exception as e:
+            logger.error(f'Category creating error for product with sku {item.sku}: {e}')
         try:
             product_obj.full_clean()
             product_obj.save()
