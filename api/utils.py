@@ -31,7 +31,7 @@ def get_or_create_category_tree(item):
             except Category.DoesNotExist:
                 category = Category.add_root(
                     source_id=source_id,
-                    name_ua=translate_with_chatgpt(name),
+                    name_ua=name,
                     name_ru=name,
                     slug=generate_slug(name)
                 )
@@ -42,7 +42,7 @@ def get_or_create_category_tree(item):
             except Category.DoesNotExist:
                 category = parent.add_child(
                     source_id=source_id,
-                    name_ua=translate_with_chatgpt(name),
+                    name_ua=name,
                     name_ru=name,
                     slug=generate_slug(name)
                 )
