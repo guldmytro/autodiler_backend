@@ -129,6 +129,7 @@ class ProductPipeline(object):
         product_obj.quantity = 0
         product_obj.producer = item.producer
         product_obj.vin = item.vin
+        product_obj.price = 0
         
         try:
             c = get_or_create_category_tree(item)
