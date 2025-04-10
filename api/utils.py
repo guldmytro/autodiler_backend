@@ -23,12 +23,18 @@ def get_or_create_category_tree(item):
             break
 
         if parent is None:
-            category, _ = Category.objects.get_or_create(
-                source_id=source_id,
-                defaults={'name_ua': name, 'name_ru': name, 
-                          'slug': generate_slug(name)}
-            )
+            # Пошук серед кореневих елементів
+            try:
+                category = Category.get_root_nodes().get(source_id=source_id)
+            except Category.DoesNotExist:
+                category = Category.add_root(
+                    source_id=source_id,
+                    name_ua=name,
+                    name_ru=name,
+                    slug=generate_slug(name)
+                )
         else:
+            # Дочірній елемент
             try:
                 category = parent.get_children().get(source_id=source_id)
             except Category.DoesNotExist:
