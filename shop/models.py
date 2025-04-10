@@ -12,7 +12,7 @@ class Category(MP_Node):
     name_ua = models.CharField(verbose_name='Назва українською',
                                max_length=200)
     name_ru = models.CharField(verbose_name='Назва російською', max_length=200)
-    slug = models.SlugField(verbose_name='Слаг', blank=True, null=True,
+    slug = models.SlugField(verbose_name='Слаг',
                             unique=True, max_length=250)
     quantity = models.PositiveIntegerField(default=0, verbose_name='Кількість')
     image = models.ImageField(upload_to='terms/%Y/%m/%d/', blank=True,
@@ -41,7 +41,7 @@ class Product(TranslatableModel):
                                       blank=True),
         description=models.TextField(verbose_name='Опис', blank=True)
     )
-    slug = models.SlugField(verbose_name='Слаг', blank=True, null=True,
+    slug = models.SlugField(verbose_name='Слаг',
                             unique=True, max_length=250)
     price = models.PositiveIntegerField(verbose_name='Ціна', blank=True)
     price_old = models.PositiveIntegerField(verbose_name='Ціна стара', 

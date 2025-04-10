@@ -1,5 +1,14 @@
 from shop.models import Category
+from slugify import slugify
+import uuid
 
+
+
+def generate_slug(text):
+    if not text:
+        return None
+    uuid_str = str(uuid.uuid4()).split('-')[0]
+    return f'{slugify(text)}-{uuid_str}'
 
 def get_or_create_category_tree(item):
     parent = None
@@ -16,7 +25,8 @@ def get_or_create_category_tree(item):
         if parent is None:
             category, _ = Category.objects.get_or_create(
                 source_id=source_id,
-                defaults={'name_ua': name, 'name_ru': name}
+                defaults={'name_ua': name, 'name_ru': name, 
+                          'slug': generate_slug(name)}
             )
         else:
             try:
@@ -25,7 +35,8 @@ def get_or_create_category_tree(item):
                 category = parent.add_child(
                     source_id=source_id,
                     name_ua=name,
-                    name_ru=name
+                    name_ru=name,
+                    slug=generate_slug(name)
                 )
         parent = category
 

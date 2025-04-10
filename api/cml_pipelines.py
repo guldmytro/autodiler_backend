@@ -14,7 +14,7 @@ import orders.models as prod
 from shop.models import Product
 import logging
 from shop.models import *
-from .utils import get_or_create_category_tree
+from .utils import get_or_create_category_tree, generate_slug
 
 
 logger = logging.getLogger(__name__)
@@ -109,9 +109,12 @@ class ProductPipeline(object):
         logger.info(f'Завантаження товару {item.sku}')
 
         try:
-            product_obj = Product.objects.get(item.sku)
+            product_obj = Product.objects.get(sku=item.sku)
         except Product.DoesNotExist:
             product_obj = Product(sku=item.sku)
+        if product_obj.slug is None:
+            product_obj.slug = generate_slug(item.name or item.name_ru)
+        
         product_obj.set_current_language('uk')
 
         product_obj.name = item.name or item.name_ru
@@ -125,11 +128,11 @@ class ProductPipeline(object):
         product_obj.producer = item.producer
         product_obj.vin = item.vin
         
-        # try:
-        #     c = get_or_create_category_tree(item)
-        #     product_obj.category = c
-        # except:
-        #     logger.error(f'Category creating error for product with sku {item.sku}')
+        try:
+            c = get_or_create_category_tree(item)
+            product_obj.category = c
+        except:
+            logger.error(f'Category creating error for product with sku {item.sku}')
         try:
             product_obj.full_clean()
             product_obj.save()
