@@ -5,8 +5,9 @@ from django.conf import settings
 
 
 class Category(MP_Node):
-    source_id = models.PositiveIntegerField(unique=True,
-                                            verbose_name='Ідентифікатор у \
+    source_id = models.CharField(max_length=500,
+                                 unique=True,
+                                 verbose_name='Ідентифікатор у \
                                                 вигрузці')
     name_ua = models.CharField(verbose_name='Назва українською',
                                max_length=200)
