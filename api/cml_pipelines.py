@@ -140,8 +140,9 @@ class ProductPipeline(object):
         try:
             product_obj.full_clean()
             product_obj.save()
-            upload_image(f'https://imidgauto.bigbrain.com.ua:27015/Foto/{item.sku}-01.jpg', 
-                         product_obj)
+            if not product_obj.image:
+                upload_image(f'https://imidgauto.bigbrain.com.ua:27015/Foto/{item.sku}-01.jpg', 
+                            product_obj)
         except Exception as e:
             logger.error(f'Product saving error for {item.sku}: {e}')
         return item
