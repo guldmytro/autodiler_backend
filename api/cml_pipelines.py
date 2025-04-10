@@ -111,7 +111,9 @@ class ProductPipeline(object):
         try:
             product_obj = Product.objects.get(sku=item.sku)
         except Product.DoesNotExist:
-            product_obj = Product(sku=item.sku)
+            slug = generate_slug(item.name or item.name_ru)
+            product_obj = Product(sku=item.sku, slug=slug)
+        
         if product_obj.slug is None:
             product_obj.slug = generate_slug(item.name or item.name_ru)
         
