@@ -19,7 +19,7 @@ def get_or_create_category_tree(item):
     ]
 
     for source_id, name in levels:
-        if not source_id or not name or len(str(item.source_id)) < 5:
+        if not source_id or not name or len(str(source_id)) < 5:
             break
 
         if parent is None:
