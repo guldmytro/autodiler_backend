@@ -39,7 +39,7 @@ class ProductSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
         model = Product
         fields = ('id', 'sku', 'name', 'slug', 'description', 'price', 'image',
                   'quantity', 'term_slug', 'category', 'producer', 'country',
-                  'params', 'recommended_products')
+                  'params', 'recommended_products', 'vin')
 
     def get_recommended_products(self, obj):
         request = self.context.get('request')
