@@ -3,6 +3,8 @@ from slugify import slugify
 import uuid
 from openai import OpenAI
 from django.conf import settings
+from django.core.files.base import ContentFile
+import requests
 
 
 
@@ -67,3 +69,19 @@ def translate_with_chatgpt(text: str) -> str:
         return response.choices[0].message.content.strip()
     except Exception as e:
         return text
+    
+
+def upload_image(url, product_obj):
+    if url is None:
+        return None
+    try:
+        response = requests.get(url)
+    except requests.exceptions.ConnectionError:
+        print('bad connection')
+        response = requests.get(url)
+    image_name = url.split('/')[-1][:300]
+    if response.status_code == 200:
+        product_obj.image.save(image_name, ContentFile(response.content),
+                                save=True)
+    else:
+        print(f'Failed to download {url}')

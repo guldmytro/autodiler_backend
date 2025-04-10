@@ -14,7 +14,7 @@ import orders.models as prod
 from shop.models import Product
 import logging
 from shop.models import *
-from .utils import get_or_create_category_tree, generate_slug
+from .utils import get_or_create_category_tree, generate_slug, upload_image
 
 
 logger = logging.getLogger(__name__)
@@ -130,6 +130,7 @@ class ProductPipeline(object):
         product_obj.producer = item.producer
         product_obj.vin = item.vin
         product_obj.price = 0
+        product_obj.price = 0
         
         try:
             c = get_or_create_category_tree(item)
@@ -139,6 +140,8 @@ class ProductPipeline(object):
         try:
             product_obj.full_clean()
             product_obj.save()
+            upload_image(f'https://imidgauto.bigbrain.com.ua:27015/Foto/{item.sku}.jpg', 
+                         product_obj)
         except Exception as e:
             logger.error(f'Product saving error for {item.sku}: {e}')
         return item
