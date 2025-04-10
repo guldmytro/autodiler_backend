@@ -13,6 +13,7 @@ from cml.items import Order, OrderItem
 import orders.models as prod
 from shop.models import Product
 import logging
+from shop.models import *
 
 
 logger = logging.getLogger(__name__)
@@ -73,6 +74,36 @@ class TaxPipeline(object):
     def process_item(self, item):
         pass
 
+def get_or_create_category_tree(item):
+    parent = None
+    levels = [
+        (item.g1_id, item.g1_name),
+        (item.g2_id, item.g2_name),
+        (item.g3_id, item.g3_name),
+    ]
+
+    for source_id, name in levels:
+        if not source_id or not name or len(str(item.source_id)) < 5:
+            break
+
+        if parent is None:
+            category, _ = Category.objects.get_or_create(
+                source_id=source_id,
+                defaults={'name_ua': name, 'name_ru': name}
+            )
+        else:
+            try:
+                category = parent.get_children().get(source_id=source_id)
+            except Category.DoesNotExist:
+                category = parent.add_child(
+                    source_id=source_id,
+                    name_ua=name,
+                    name_ru=name
+                )
+        parent = category
+
+    return category
+
 
 class ProductPipeline(object):
     """
@@ -120,7 +151,33 @@ class ProductPipeline(object):
         logger.info(f'g2_name: {item.g2_name}')
         logger.info(f'g3_id: {item.g3_id}')
         logger.info(f'g3_name: {item.g3_name}')
-        pass
+        try:
+            product_obj = Product.objects.get(item.sku)
+        except Product.DoesNotExist:
+            product_obj = Product(sku=item.sku)
+        product_obj.set_current_language('uk')
+
+        product_obj.name = item.name or item.name_ru
+        product_obj.description = item.desc or item.desc_ru
+
+        product_obj.set_current_language('ru')
+        product_obj.name = item.name_ru or item.name
+        product_obj.description = item.desc_ru or item.desc
+
+        product_obj.quantity = 0
+        product_obj.producer = item.producer
+        product_obj.vin = item.vin
+        
+        try:
+            c = get_or_create_category_tree(item)
+            product_obj.category = c
+        except:
+            logger.error(f'Category creating error for product with sku {item.sku}')
+        try:
+            product_obj.full_clean()
+            product_obj.save()
+        except Exception as e:
+            logger.error(f'Product saving error for {item.sku}: {e}')
 
 
 class PriceTypePipeline(object):

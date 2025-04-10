@@ -61,6 +61,8 @@ class Product(TranslatableModel):
                                 blank=True)
     country = models.CharField(max_length=20, verbose_name='Країна виробник',
                                blank=True)
+    vin = models.CharField(max_length=500, verbose_name='Vin', blank=True,
+                           null=True)
     params = models.JSONField(verbose_name='Параметри', blank=True)
     created = models.DateTimeField(auto_now_add=True, verbose_name='Створено')
     updated = models.DateTimeField(auto_now=True)
