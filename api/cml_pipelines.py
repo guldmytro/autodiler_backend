@@ -113,6 +113,8 @@ class ProductPipeline(object):
         except Product.DoesNotExist:
             slug = generate_slug(item.name or item.name_ru)
             product_obj = Product(sku=item.sku, slug=slug)
+            product_obj.price = 0
+            product_obj.quantity = 0
         
         if product_obj.slug is None:
             product_obj.slug = generate_slug(item.name or item.name_ru)
@@ -126,11 +128,9 @@ class ProductPipeline(object):
         product_obj.name = item.name_ru or item.name
         product_obj.description = item.desc_ru or item.desc
 
-        product_obj.quantity = 0
         product_obj.producer = item.producer
         product_obj.vin = item.vin
-        product_obj.price = 0
-        product_obj.price = 0
+        
         
         try:
             c = get_or_create_category_tree(item)
