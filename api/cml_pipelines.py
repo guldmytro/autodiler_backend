@@ -194,7 +194,9 @@ class OfferPipeline(object):
                         p.save()
                 except:
                     pass
+            logger.info(f'Offer successfully updated for product {sku} (price = {p.price}, quantity = {p.quantity})')
         except Product.DoesNotExist:
+            logger.warning(f'Offer with sku {sku} not found')
             pass
         
         return item
