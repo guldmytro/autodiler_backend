@@ -5,7 +5,9 @@ from openai import OpenAI
 from django.conf import settings
 from django.core.files.base import ContentFile
 import requests
+import logging
 
+logger = logging.getLogger(__name__)
 
 
 def generate_slug(text):
@@ -74,14 +76,19 @@ def translate_with_chatgpt(text: str) -> str:
 def upload_image(url, product_obj):
     if url is None:
         return None
+
+    # Проверка, не загружалось ли уже изображение для этого URL
+    image_name = url.split('/')[-1][:300]
+
     try:
         response = requests.get(url)
-    except requests.exceptions.ConnectionError:
-        print('bad connection')
-        response = requests.get(url)
-    image_name = url.split('/')[-1][:300]
+        response.raise_for_status()  # Проверка на успешный ответ (status_code 200)
+    except requests.exceptions.RequestException as e:
+        logger.error(f'Failed to download image from {url}: {e}')
+        return None
+
     if response.status_code == 200:
-        product_obj.image.save(image_name, ContentFile(response.content),
-                                save=True)
+        product_obj.image.save(image_name, ContentFile(response.content), save=True)
+        logger.info(f'Image uploaded successfully for product {product_obj.sku}')
     else:
-        print(f'Failed to download {url}')
+        logger.error(f'Failed to download image from {url}, HTTP status code: {response.status_code}')
