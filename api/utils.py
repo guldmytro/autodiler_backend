@@ -30,9 +30,8 @@ def get_or_create_category_tree(item):
 
         if parent is None:
             # Пошук серед кореневих елементів
-            try:
-                category = Category.get_root_nodes().get(source_id=source_id)
-            except Category.DoesNotExist:
+            category = Category.get_root_nodes().filter(source_id=source_id).first()
+            if not category:
                 category = Category.add_root(
                     source_id=source_id,
                     name_ua=name,
@@ -41,15 +40,15 @@ def get_or_create_category_tree(item):
                 )
         else:
             # Дочірній елемент
-            try:
-                category = parent.get_children().get(source_id=source_id)
-            except Category.DoesNotExist:
+            category = parent.get_children().filter(source_id=source_id).first()
+            if not category:
                 category = parent.add_child(
                     source_id=source_id,
                     name_ua=name,
                     name_ru=name,
                     slug=generate_slug(name)
                 )
+
         parent = category
 
     return category
