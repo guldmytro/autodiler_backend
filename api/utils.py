@@ -83,8 +83,8 @@ def upload_image(url, product_obj):
     try:
         response = requests.get(url)
         response.raise_for_status()  # Проверка на успешный ответ (status_code 200)
-    except requests.exceptions.RequestException as e:
-        logger.error(f'Failed to download image from {url}: {e}')
+    except:
+        logger.error(f'Failed to download image from {url}')
         return None
 
     if response.status_code == 200:
