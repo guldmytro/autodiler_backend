@@ -20,6 +20,7 @@ from rest_framework import generics
 from rest_framework.pagination import PageNumberPagination
 from seo.models import SeoItem
 from django.contrib.postgres.search import TrigramSimilarity
+from django.db.models import Q
 
 
 class NoPagination(PageNumberPagination):
@@ -52,9 +53,17 @@ class ProductFilter(d_filters.FilterSet):
             return queryset.none()
 
     def filters_by_query(self, queryset, name, value):
-        f_qs = queryset.filter(translation__language_code=self.language_code).annotate(
+        f_qs = queryset.filter(
+            Q(translation__language_code=self.language_code) & (
+                Q(translation__name__icontains=value) |
+                Q(vin__icontains=value)
+            )
+        ).annotate(
             similarity=TrigramSimilarity('translation__name', value)
-        ).filter(similarity__gt=0.1).order_by('-similarity')
+        ).filter(
+            Q(similarity__gt=0.1) | Q(vin__icontains=value)
+        ).order_by('-similarity')
+        
         return f_qs
 
     class Meta:
