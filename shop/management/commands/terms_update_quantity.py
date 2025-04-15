@@ -1,5 +1,5 @@
 from django.core.management import BaseCommand
-from shop.models import Category
+from shop.models import Category, Product
 
 
 class Command(BaseCommand):
@@ -9,7 +9,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         self.root_categories = Category.get_root_nodes()
         self.loop_root_categories()
-        self.clear_categories()
+        # self.clear_categories()
 
     def loop_root_categories(self):
         for root_category in self.root_categories:
@@ -21,7 +21,7 @@ class Command(BaseCommand):
         категорії та всіх її підкатегоріях і оновлення поля quantity.
         """
         # Отримати кількість товарів у поточній категорії
-        product_count = category.products.all().count()
+        product_count = category.products.exclude(image__isnull=True).exclude(image='').count()
 
         # Отримати кількість товарів у всіх підкатегоріях
         subcategories = category.get_children()
@@ -40,4 +40,6 @@ class Command(BaseCommand):
         Delete all empty cats
         :return: None
         """
+        Product.objects.filter(image__isnull=True).delete()
+        Product.objects.filter(image='').delete()
         Category.objects.filter(quantity=0).delete()
