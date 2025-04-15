@@ -76,7 +76,7 @@ class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.prefetch_related(
         'translation',
         # 'category__translation'
-    ).select_related('category')
+    ).select_related('category').exclude(image__isnull=True).exclude(image='')
     serializer_class = ProductSerializer
     filter_backends = [OrderingFilter, d_filters.DjangoFilterBackend]
     filterset_class = ProductFilter
