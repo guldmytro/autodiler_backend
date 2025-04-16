@@ -56,14 +56,19 @@ class ProductFilter(d_filters.FilterSet):
         f_qs = queryset.filter(
             Q(translation__language_code=self.language_code) & (
                 Q(translation__name__icontains=value) |
-                Q(vin__icontains=value)
+                Q(vin__icontains=value) |
+                Q(producer__icontains=value) |
+                Q(sku__icontains=value)
             )
         ).annotate(
             similarity=TrigramSimilarity('translation__name', value)
         ).filter(
-            Q(similarity__gt=0.1) | Q(vin__icontains=value)
+            Q(similarity__gt=0.1) |
+            Q(vin__icontains=value) |
+            Q(producer__icontains=value) |
+            Q(sku__icontains=value)
         ).order_by('-similarity')
-        
+
         return f_qs
 
     class Meta:
