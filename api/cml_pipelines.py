@@ -107,6 +107,10 @@ class ProductPipeline(object):
     """
     def process_item(self, item):
         logger.info(f'Завантаження товару {item.sku}')
+        if item.sku == '16075':
+            logger.debug(f'{item.sku} has 1c group id 1: {item.g1_id}')
+            logger.debug(item.g2_id)
+            logger.debug(item.g3_id)
 
         try:
             product_obj = Product.objects.get(sku=item.sku)
