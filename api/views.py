@@ -342,6 +342,7 @@ def export_orders_to_xml(request):
         SubElement(order_el, 'Paid').text = str(order.paid)
         SubElement(order_el, 'Comment').text = order.comment
         SubElement(order_el, 'Created').text = order.created.isoformat()
+        SubElement(order_el, 'Updated').text = order.updated.isoformat()
 
         items_el = SubElement(order_el, 'Items')
 
