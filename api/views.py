@@ -312,3 +312,46 @@ class SeoAPiView(generics.ListAPIView):
     filter_backends = [OrderingFilter, d_filters.DjangoFilterBackend]
     filterset_class = SeoFilter
 
+
+
+from django.http import HttpResponse
+from xml.etree.ElementTree import Element, SubElement, tostring
+from cml.auth import *
+from django.views.decorators.csrf import csrf_exempt
+
+@csrf_exempt
+@has_perm_or_basicauth('cml.add_exchange')
+@logged_in_or_basicauth()
+def export_orders_to_xml(request):
+    orders = Order.objects.prefetch_related('items__product').all()
+
+    root = Element('Orders')
+
+    for order in orders:
+        order_el = SubElement(root, 'Order')
+        SubElement(order_el, 'Id').text = str(order.id)
+        SubElement(order_el, 'FirstName').text = order.first_name
+        SubElement(order_el, 'LastName').text = order.last_name
+        SubElement(order_el, 'Phone').text = order.clean_phone()
+        SubElement(order_el, 'Email').text = order.email
+        SubElement(order_el, 'Delivery').text = order.get_delivery_display()
+        SubElement(order_el, 'City').text = order.city
+        SubElement(order_el, 'Address').text = order.address or ''
+        SubElement(order_el, 'TTN').text = order.ttn or ''
+        SubElement(order_el, 'PaymentMethod').text = order.get_payment_method_display()
+        SubElement(order_el, 'Paid').text = str(order.paid)
+        SubElement(order_el, 'Comment').text = order.comment
+        SubElement(order_el, 'Created').text = order.created.isoformat()
+
+        items_el = SubElement(order_el, 'Items')
+
+        for item in order.items.all():
+            item_el = SubElement(items_el, 'Item')
+            SubElement(item_el, 'SKU').text = item.product.sku
+            SubElement(item_el, 'ProductName').text = item.product.name
+            SubElement(item_el, 'Quantity').text = str(item.quantity)
+            SubElement(item_el, 'Price').text = str(item.price)
+            SubElement(item_el, 'Total').text = str(item.get_cost())
+
+    xml_string = tostring(root, encoding='utf-8')
+    return HttpResponse(xml_string, content_type='application/xml')

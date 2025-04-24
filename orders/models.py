@@ -2,7 +2,7 @@ from django.db import models
 from shop.models import Product
 from django.contrib.auth.models import User
 from django.urls import reverse
-
+import re
 
 class Order(models.Model):
 
@@ -43,6 +43,7 @@ class Order(models.Model):
                                 choices=Delivery.choices,
                                 default=Delivery.PICKUP,
                                 verbose_name='Спосіб доставки')
+    ttn = models.CharField(max_length=80, verbose_name='ТТН', blank=True, default='')
     city = models.CharField(max_length=255, blank=True,
                             verbose_name='Населений пункт')
     nova_office = models.CharField(max_length=255, blank=True,
@@ -85,6 +86,27 @@ class Order(models.Model):
 
     def get_total_cost(self):
         return sum(item.get_cost() for item in self.items.all())
+
+    def clean_phone(self):
+        digits = re.sub(r'\D', '', self.phone)  # видаляємо все, крім цифр
+
+        # Якщо номер починається з '0' -> замінюємо на '38'
+        if digits.startswith('0'):
+            digits = '38' + digits
+        # Якщо номер починається з '80' -> замінюємо на '3' + ...
+        elif digits.startswith('80'):
+            digits = '3' + digits
+        # Якщо номер починається з '96', '97' і т.д. — додаємо '380'
+        elif len(digits) == 9:
+            digits = '380' + digits
+        # Якщо номер починається з '+' — вже може бути ок
+        elif digits.startswith('380'):
+            pass
+        else:
+            # fallback або виняток
+            digits = digits  # або raise ValidationError("Некоректний номер телефону")
+
+        return digits
 
 
 class OrderItem(models.Model):
