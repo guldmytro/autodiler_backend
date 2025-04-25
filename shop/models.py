@@ -34,6 +34,7 @@ class Category(MP_Node):
 
 
 class Product(TranslatableModel):
+    id_1c = models.CharField(max_length=200, blank=True, null=True)
     sku = models.CharField(max_length=10, verbose_name='Артикул', unique=True)
     translation = TranslatedFields(
         name=models.CharField(max_length=200, verbose_name='Назва'),
