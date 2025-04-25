@@ -123,6 +123,9 @@ class ProductPipeline(object):
         if product_obj.slug is None:
             product_obj.slug = generate_slug(item.name or item.name_ru)
         
+        if product_obj.id_1c is None:
+            product_obj.id_1c = item.id
+        
         product_obj.set_current_language('uk')
 
         product_obj.name = item.name or item.name_ru
