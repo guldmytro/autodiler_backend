@@ -281,7 +281,7 @@ class ProductSitemap(generics.ListAPIView):
 
 
 class ProductMerchant(generics.ListAPIView):
-    queryset = Product.objects.exclude(image__isnull=True).exclude(image='')
+    queryset = Product.objects.exclude(image__isnull=True).exclude(image='').filter(quantity__gt=0)
     serializer_class = ProductMerchantSerializer
     permission_classes = (IsAdminOrReadOnly,)
     pagination_class = NoPagination
