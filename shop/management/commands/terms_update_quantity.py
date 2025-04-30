@@ -21,7 +21,7 @@ class Command(BaseCommand):
         категорії та всіх її підкатегоріях і оновлення поля quantity.
         """
         # Отримати кількість товарів у поточній категорії
-        product_count = category.products.exclude(image__isnull=True).exclude(image='').count()
+        product_count = category.products.exclude(image__isnull=True).exclude(image='').filter(quantity__gt=0).count()
 
         # Отримати кількість товарів у всіх підкатегоріях
         subcategories = category.get_children()

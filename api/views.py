@@ -81,7 +81,7 @@ class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.prefetch_related(
         'translation',
         # 'category__translation'
-    ).select_related('category').exclude(image__isnull=True).exclude(image='')
+    ).select_related('category').exclude(image__isnull=True).exclude(image='').filter(quantity__gt=0)
     serializer_class = ProductSerializer
     filter_backends = [OrderingFilter, d_filters.DjangoFilterBackend]
     filterset_class = ProductFilter
@@ -274,7 +274,7 @@ class MyOrderViewSet(viewsets.ModelViewSet):
 
 
 class ProductSitemap(generics.ListAPIView):
-    queryset = Product.objects.all()
+    queryset = Product.objects.exclude(image__isnull=True).exclude(image='').filter(quantity__gt=0)
     serializer_class = ProductSitemapSerializer
     permission_classes = (IsAdminOrReadOnly,)
     pagination_class = NoPagination
