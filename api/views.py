@@ -319,6 +319,7 @@ from xml.etree.ElementTree import Element, SubElement, tostring
 from cml.auth import *
 from django.views.decorators.csrf import csrf_exempt
 from datetime import date
+from django.utils import timezone
 
 @csrf_exempt
 @has_perm_or_basicauth('cml.add_exchange')
@@ -330,13 +331,18 @@ def export_orders_to_xml(request):
 
     for order in orders:
         order_el = SubElement(root, 'Документ')
+        local_created = timezone.localtime(order.created).replace(microsecond=0)
+
         SubElement(order_el, 'Ид').text = str(order.id)
+        SubElement(order_el, 'Номер').text = str(order.id)
+        SubElement(order_el, 'Дата').text = local_created.date().isoformat()
+        SubElement(order_el, 'Время').text = local_created.time().isoformat()
         SubElement(order_el, 'ХозОперация').text = 'Заказ товара'
         SubElement(order_el, 'Роль').text = 'Продавец'
         SubElement(order_el, 'Валюта').text = 'UAH'
         SubElement(order_el, 'Курс').text = '1'
         SubElement(order_el, 'Сумма').text = f"{order.get_total_cost():.2f}"
-        SubElement(order_el, 'СрокПлатежа').text = order.created.date().isoformat()
+        SubElement(order_el, 'СрокПлатежа').text = local_created.date().isoformat()
 
         kontrs = SubElement(order_el, "Контрагенты")
         kontr = SubElement(kontrs, "Контрагент")
@@ -347,6 +353,9 @@ def export_orders_to_xml(request):
         SubElement(rekv, "ПолноеНаименование").text = f'{order.last_name} {order.first_name}'
         SubElement(rekv, "Телефон").text = order.clean_phone()
         SubElement(rekv, "Почта").text = order.email
+
+        SubElement(order_el, 'Комментарий').text = f'{order.clean_phone()} | {order.email}'
+        
 
         # Товары
         products = SubElement(order_el, "Товары")
