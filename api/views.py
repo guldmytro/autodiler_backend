@@ -318,6 +318,7 @@ from django.http import HttpResponse
 from xml.etree.ElementTree import Element, SubElement, tostring
 from cml.auth import *
 from django.views.decorators.csrf import csrf_exempt
+from datetime import date
 
 @csrf_exempt
 @has_perm_or_basicauth('cml.add_exchange')
@@ -325,34 +326,66 @@ from django.views.decorators.csrf import csrf_exempt
 def export_orders_to_xml(request):
     orders = Order.objects.prefetch_related('items__product').all()
 
-    root = Element('Orders')
+    root = Element("КоммерческаяИнформация", ВерсияСхемы="2.03", ДатаФормирования=str(date.today()))
 
     for order in orders:
-        order_el = SubElement(root, 'Order')
-        SubElement(order_el, 'Id').text = str(order.id)
-        SubElement(order_el, 'FirstName').text = order.first_name
-        SubElement(order_el, 'LastName').text = order.last_name
-        SubElement(order_el, 'Phone').text = order.clean_phone()
-        SubElement(order_el, 'Email').text = order.email
-        SubElement(order_el, 'Delivery').text = order.get_delivery_display()
-        SubElement(order_el, 'City').text = order.city
-        SubElement(order_el, 'Address').text = order.address or ''
-        SubElement(order_el, 'TTN').text = order.ttn or ''
-        SubElement(order_el, 'PaymentMethod').text = order.get_payment_method_display()
-        SubElement(order_el, 'Paid').text = str(order.paid)
-        SubElement(order_el, 'Comment').text = order.comment
-        SubElement(order_el, 'Created').text = order.created.isoformat()
-        SubElement(order_el, 'Updated').text = order.updated.isoformat()
+        order_el = SubElement(root, 'Документ')
+        SubElement(order_el, 'Ид').text = str(order.id)
+        SubElement(order_el, 'ХозОперация').text = 'Заказ товара'
+        SubElement(order_el, 'Роль').text = 'Продавец'
+        SubElement(order_el, 'Валюта').text = 'UAH'
+        SubElement(order_el, 'Курс').text = '1'
+        SubElement(order_el, 'Сумма').text = f"{order.get_total_cost():.2f}"
+        SubElement(order_el, 'СрокПлатежа').text = order.created.date().isoformat()
 
-        items_el = SubElement(order_el, 'Items')
+        kontrs = SubElement(order_el, "Контрагенты")
+        kontr = SubElement(kontrs, "Контрагент")
+        SubElement(kontr, "Ид").text = ''
+        SubElement(kontr, "Наименование").text = f'{order.last_name} {order.first_name}'
+        SubElement(kontr, "Роль").text = "Покупатель"
+        rekv = SubElement(kontr, "РеквизитыФизЛица")
+        SubElement(rekv, "ПолноеНаименование").text = f'{order.last_name} {order.first_name}'
+        SubElement(rekv, "Телефон").text = order.clean_phone()
+        SubElement(rekv, "Почта").text = order.email
+
+        # Товары
+        products = SubElement(order_el, "Товары")
 
         for item in order.items.all():
-            item_el = SubElement(items_el, 'Item')
-            SubElement(item_el, 'SKU').text = item.product.sku
-            SubElement(item_el, 'ProductName').text = item.product.name
-            SubElement(item_el, 'Quantity').text = str(item.quantity)
-            SubElement(item_el, 'Price').text = str(item.price)
-            SubElement(item_el, 'Total').text = str(item.get_cost())
+            item_el = SubElement(products, 'Товар')
+            SubElement(item_el, "Ид").text = item.product.id_1c
+            SubElement(item_el, "Артикул").text = ''
+            SubElement(item_el, "Наименование").text = item.product.name
+            base_unit = SubElement(item_el, "БазоваяЕдиница", {
+                "Код": item.product.sku,
+                "НаименованиеПолное": "шт",
+                "МеждународноеСокращение": "PCE"
+            })
+            base_unit.text = "шт"
+
+            z_rekv = SubElement(item_el, "ЗначенияРеквизитов")
+            for name in ["ВидНоменклатуры", "ТипНоменклатуры"]:
+                val = SubElement(z_rekv, "ЗначениеРеквизита")
+                SubElement(val, "Наименование").text = name
+                SubElement(val, "Значение").text = "Товар"
+
+            taxes = SubElement(item_el, "СтавкиНалогов")
+            tax = SubElement(taxes, "СтавкаНалога")
+            SubElement(tax, "Наименование").text = "НДС"
+            SubElement(tax, "Ставка").text = "20"
+
+            SubElement(item_el, "ЦенаЗаЕдиницу").text = f"{item.price:.2f}"
+            SubElement(item_el, "Количество").text = str(item.quantity)
+            SubElement(item_el, "Сумма").text = f'{item.get_cost():.2f}'
+            SubElement(item_el, "Единица").text = "шт"
+            SubElement(item_el, "Коэффициент").text = "1"
+
+            nalogi = SubElement(item_el, "Налоги")
+            nds = SubElement(nalogi, "Налог")
+            SubElement(nds, "Наименование").text = "НДС"
+            SubElement(nds, "Ставка").text = "Без налога"
+            SubElement(nds, "УчтеноВСумме").text = "false"
+            SubElement(nds, "Сумма").text = "0"
 
     xml_string = tostring(root, encoding='utf-8')
     return HttpResponse(xml_string, content_type='application/xml')
