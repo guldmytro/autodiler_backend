@@ -1,8 +1,6 @@
 from shop.models import Category
 from slugify import slugify
 import uuid
-from openai import OpenAI
-from django.conf import settings
 from django.core.files.base import ContentFile
 import requests
 import logging
@@ -52,24 +50,6 @@ def get_or_create_category_tree(item):
         parent = category
 
     return category
-
-
-client = OpenAI(api_key=settings.OPENAI_KEY)
-
-
-def translate_with_chatgpt(text: str) -> str:
-    try:
-        response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {"role": "system", "content": "You are a helpful translator."},
-                {"role": "user", "content": f"Translate the following text from Russian to Ukrainian:\n{text}"}
-            ],
-            temperature=0,
-        )
-        return response.choices[0].message.content.strip()
-    except Exception as e:
-        return text
     
 
 def upload_image(url, product_obj):

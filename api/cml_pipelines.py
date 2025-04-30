@@ -15,6 +15,7 @@ from shop.models import Product
 import logging
 from shop.models import *
 from .utils import get_or_create_category_tree, generate_slug, upload_image
+from orders.models import Order
 
 
 logger = logging.getLogger(__name__)
@@ -227,10 +228,15 @@ class OrderPipeline(object):
     additional_fields
     """
     def process_item(self, item):
-        pass
+        return {
+            'id': item.id,
+            'number': item.id,
+            
+        }
 
     def yield_item(self):
-        pass
+        for order in Order.objects.all():
+            yield order
 
     def flush(self):
         pass
