@@ -34,6 +34,6 @@ urlpatterns += [
     path(r'categories-sitemap/', CategorySitemap.as_view(),
          name='categories-sitemap'),
     path(r'seo/', SeoAPiView.as_view(), name='seo'),
-    path(r'orders-exchange/', export_orders_to_xml, name='orders-exchange'),
+    path(r'order.xml', export_orders_to_xml, name='orders-exchange'),
 ]
 
