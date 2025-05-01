@@ -66,6 +66,7 @@ class Order(models.Model):
     created = models.DateTimeField(auto_now_add=True, verbose_name='Створено')
     updated = models.DateTimeField(auto_now=True, verbose_name='Оновлено')
     user_uuid = models.UUIDField(verbose_name='Ідентифікатор покупця')
+    exported = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = 'Замовлення'

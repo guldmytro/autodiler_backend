@@ -235,8 +235,8 @@ class OrderPipeline(object):
         }
 
     def yield_item(self):
-        for order in Order.objects.all():
+        for order in Order.objects.filter(exported=False):
             yield order
 
     def flush(self):
-        pass
+        Order.objects.filter(exported=False).update(exported=True)
