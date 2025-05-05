@@ -65,7 +65,7 @@ class Order(models.Model):
 
     created = models.DateTimeField(auto_now_add=True, verbose_name='Створено')
     updated = models.DateTimeField(auto_now=True, verbose_name='Оновлено')
-    user_uuid = models.UUIDField(verbose_name='Ідентифікатор покупця')
+    user_uuid = models.UUIDField(verbose_name='Ідентифікатор покупця', blank=True, null=True)
     exported = models.BooleanField(default=False)
 
     class Meta:
@@ -131,3 +131,27 @@ class OrderItem(models.Model):
 
     def get_cost(self):
         return self.price * self.quantity
+
+
+class OrderOneClick(models.Model):
+    class Status(models.TextChoices):
+        NEW = 'nw', 'Нова заявка'
+        DONE = 'cd', 'Опрацьовано'
+    status = models.CharField(max_length=2, choices=Status.choices, 
+                              default=Status.NEW, verbose_name='Статус')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE,
+                                blank=True, null=True, verbose_name='Товар')
+
+    order = models.OneToOneField(Order, on_delete=models.CASCADE, blank=True, 
+                                 null=True, verbose_name='Замовлення')
+    phone = models.CharField(max_length=17, verbose_name='Телефон')
+
+    created = models.DateTimeField(auto_now_add=True, verbose_name='Створено')
+
+    class Meta:
+        ordering = ('-created',)
+        verbose_name = 'Замовлення в 1 клік'
+        verbose_name_plural = 'Замовлення в 1 клік'
+    
+    def __str__(self):
+        return f'Замовлення #{self.id}'

@@ -14,4 +14,5 @@ class CategoryAdmin(TreeAdmin, TranslatableAdmin):
 @admin.register(Product)
 class ProductAdmin(TranslatableAdmin):
     list_select_related = ['category']
+    search_fields = ['sku', 'translation__name']
 

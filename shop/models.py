@@ -79,7 +79,7 @@ class Product(TranslatableModel):
         ]
 
     def __str__(self):
-        return self.name
+        return f'{self.sku} ({self.price} грн., залишок - {self.quantity} шт.) - {self.name}'
 
     def get_absolute_url(self):
         return f'{settings.CORS_ALLOWED_ORIGINS[3]}/uk/product-cat/{self.category.slug}/{self.slug}'

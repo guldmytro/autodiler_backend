@@ -2,7 +2,7 @@ from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from shop.models import Product, Category
-from orders.models import Order
+from orders.models import Order, OrderOneClick
 from faq.models import Faq
 from blog.models import Post
 from profiles.models import Profile
@@ -109,6 +109,10 @@ class ProductViewSet(viewsets.ModelViewSet):
                                    context)
         to = settings.EMAIL_RECEPIENTS
         subject = 'Купівля в 1 клік'
+        try:
+            OrderOneClick.objects.create(phone=phone, product=obj)
+        except:
+            pass
         if send_mail(subject,
                      '',
                      'info.autodealer.ua@gmail.com',
