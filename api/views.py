@@ -113,10 +113,10 @@ class ProductViewSet(viewsets.ModelViewSet):
         to = settings.EMAIL_RECEPIENTS
         subject = 'Купівля в 1 клік'
         try:
-            OrderOneClick.objects.create(phone=phone, product=obj)
+            OrderOneClick.objects.create(phone=str(phone).strip(), product=obj)
         except Exception as e:
             logger.error(f'Помилка під час створвення замовлення в 1 клік: {e}')
-            
+
         if send_mail(subject,
                      '',
                      'info.autodealer.ua@gmail.com',
