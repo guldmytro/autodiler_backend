@@ -21,6 +21,9 @@ from rest_framework.pagination import PageNumberPagination
 from seo.models import SeoItem
 from django.contrib.postgres.search import TrigramSimilarity
 from django.db.models import Q
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class NoPagination(PageNumberPagination):
@@ -111,8 +114,9 @@ class ProductViewSet(viewsets.ModelViewSet):
         subject = 'Купівля в 1 клік'
         try:
             OrderOneClick.objects.create(phone=phone, product=obj)
-        except:
-            pass
+        except Exception as e:
+            logger.error(f'Помилка під час створвення замовлення в 1 клік: {e}')
+            
         if send_mail(subject,
                      '',
                      'info.autodealer.ua@gmail.com',
