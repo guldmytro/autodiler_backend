@@ -36,7 +36,7 @@ class Order(models.Model):
                              blank=True, null=True)
     first_name = models.CharField(max_length=50, verbose_name='Ім\'я')
     last_name = models.CharField(max_length=50, verbose_name='Прізвище')
-    phone = models.CharField(max_length=17, verbose_name='Телефон')
+    phone = models.CharField(max_length=100, verbose_name='Телефон')
     email = models.EmailField(verbose_name='E-mail')
 
     delivery = models.CharField(max_length=2,
@@ -144,7 +144,7 @@ class OrderOneClick(models.Model):
 
     order = models.OneToOneField(Order, on_delete=models.CASCADE, blank=True, 
                                  null=True, verbose_name='Замовлення')
-    phone = models.CharField(max_length=17, verbose_name='Телефон')
+    phone = models.CharField(max_length=100, verbose_name='Телефон')
 
     created = models.DateTimeField(auto_now_add=True, verbose_name='Створено')
 

@@ -115,7 +115,9 @@ class ProductViewSet(viewsets.ModelViewSet):
         try:
             OrderOneClick.objects.create(phone=str(phone).strip(), product=obj)
         except Exception as e:
+
             logger.error(f'Помилка під час створвення замовлення в 1 клік: {e}')
+            logger.error(f'phone: {str(phone).strip()} .')
 
         if send_mail(subject,
                      '',
