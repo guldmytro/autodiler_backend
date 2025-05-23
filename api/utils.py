@@ -75,8 +75,15 @@ def upload_image(url, product_obj):
 
 def upload_images(product_obj):
     for i in range(4):
-        if i == 0:
+        if i + 1 == 1 and product_obj.image is not None:
             continue
+        if i + 1 == 2 and product_obj.image2 is not None:
+            continue
+        if i + 1 == 3 and product_obj.image3 is not None:
+            continue
+        if i + 1 == 4 and product_obj.image4 is not None:
+            continue
+
         url = f'https://imidgauto.bigbrain.com.ua:27015/Foto/{product_obj.sku}-0{i+1}.jpg'
 
         # Проверка, не загружалось ли уже изображение для этого URL
@@ -90,18 +97,17 @@ def upload_images(product_obj):
             continue
 
         if response.status_code == 200:
-            print(response.status_code)
             if i + 1 == 1:
                 product_obj.image.save(image_name, ContentFile(response.content), save=True)
                 logger.info(f'Image uploaded successfully for product {product_obj.sku}')
             if i + 1 == 2:
                 product_obj.image2.save(image_name, ContentFile(response.content), save=True)
-                logger.info(f'Image uploaded successfully for product {product_obj.sku}')
+                logger.info(f'Image2 uploaded successfully for product {product_obj.sku}')
             if i + 1 == 3:
                 product_obj.image3.save(image_name, ContentFile(response.content), save=True)
-                logger.info(f'Image uploaded successfully for product {product_obj.sku}')
+                logger.info(f'Image3 uploaded successfully for product {product_obj.sku}')
             if i + 1 == 4:
                 product_obj.image3.save(image_name, ContentFile(response.content), save=True)
-                logger.info(f'Image uploaded successfully for product {product_obj.sku}')
+                logger.info(f'Image4 uploaded successfully for product {product_obj.sku}')
         else:
             logger.error(f'Failed to download image from {url}, HTTP status code: {response.status_code}')
