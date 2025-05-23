@@ -75,6 +75,8 @@ def upload_image(url, product_obj):
 
 def upload_images(product_obj):
     for i in range(4):
+        if i == 0:
+            continue
         url = f'https://imidgauto.bigbrain.com.ua:27015/Foto/{product_obj.sku}-0{i+1}.jpg'
 
         # Проверка, не загружалось ли уже изображение для этого URL
