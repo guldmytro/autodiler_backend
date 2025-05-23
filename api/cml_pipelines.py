@@ -204,6 +204,7 @@ class OfferPipeline(object):
                 except:
                     pass
             logger.info(f'Offer successfully updated for product {sku} (price = {p.price}, quantity = {p.quantity})')
+            upload_images(p)
         except Product.DoesNotExist:
             logger.warning(f'Offer with sku {sku} not found')
             pass
