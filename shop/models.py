@@ -48,7 +48,13 @@ class Product(TranslatableModel):
     price_old = models.PositiveIntegerField(verbose_name='Ціна стара', 
                                             blank=True, null=True)
     image = models.ImageField(upload_to='products/%Y/%m/%d/', blank=True,
-                              verbose_name='Фото')
+                              verbose_name='Фото', null=True)
+    image2 = models.ImageField(upload_to='products/%Y/%m/%d/', blank=True,
+                               verbose_name='Фото', null=True)
+    image3 = models.ImageField(upload_to='products/%Y/%m/%d/', blank=True,
+                               verbose_name='Фото', null=True)
+    image4 = models.ImageField(upload_to='products/%Y/%m/%d/', blank=True,
+                               verbose_name='Фото', null=True)
     image_source = models.URLField(
         verbose_name='Посилання на оригінальну картинку',
         blank=True,
