@@ -71,3 +71,35 @@ def upload_image(url, product_obj):
         logger.info(f'Image uploaded successfully for product {product_obj.sku}')
     else:
         logger.error(f'Failed to download image from {url}, HTTP status code: {response.status_code}')
+
+
+def upload_images(product_obj):
+    for i in range(4):
+        url = f'https://imidgauto.bigbrain.com.ua:27015/Foto/{product_obj.sku}-0{i+1}.jpg'
+
+        # Проверка, не загружалось ли уже изображение для этого URL
+        image_name = url.split('/')[-1][:300]
+
+        try:
+            response = requests.get(url)
+            response.raise_for_status()  # Проверка на успешный ответ (status_code 200)
+        except:
+            logger.error(f'Failed to download image from {url}')
+            continue
+
+        if response.status_code == 200:
+            print(response.status_code)
+            if i + 1 == 1:
+                product_obj.image.save(image_name, ContentFile(response.content), save=True)
+                logger.info(f'Image uploaded successfully for product {product_obj.sku}')
+            if i + 1 == 2:
+                product_obj.image2.save(image_name, ContentFile(response.content), save=True)
+                logger.info(f'Image uploaded successfully for product {product_obj.sku}')
+            if i + 1 == 3:
+                product_obj.image3.save(image_name, ContentFile(response.content), save=True)
+                logger.info(f'Image uploaded successfully for product {product_obj.sku}')
+            if i + 1 == 4:
+                product_obj.image3.save(image_name, ContentFile(response.content), save=True)
+                logger.info(f'Image uploaded successfully for product {product_obj.sku}')
+        else:
+            logger.error(f'Failed to download image from {url}, HTTP status code: {response.status_code}')
