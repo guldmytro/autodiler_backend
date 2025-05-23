@@ -76,16 +76,16 @@ def upload_image(url, product_obj):
 def upload_images(product_obj):
     for i in range(4):
         if i + 1 == 1 and (product_obj.image != '' or product_obj.image is None):
-            logger.info(f'Image is already exist for product {product_obj.sku}')
+            logger.info(f'Image is already exist for product {product_obj.sku}: {product_obj.image}')
             continue
         if i + 1 == 2 and (product_obj.image2 != '' or product_obj.image2 is None):
-            logger.info(f'Image2 is already exist for product {product_obj.sku}')
+            logger.info(f'Image2 is already exist for product {product_obj.sku}: {product_obj.image2}')
             continue
         if i + 1 == 3 and (product_obj.image3 != '' or product_obj.image3 is None):
-            logger.info(f'Image3 is already exist for product {product_obj.sku}')
+            logger.info(f'Image3 is already exist for product {product_obj.sku}: {product_obj.image3}')
             continue
         if i + 1 == 4 and (product_obj.image4 != '' or product_obj.image4 is None):
-            logger.info(f'Image4 is already exist for product {product_obj.sku}')
+            logger.info(f'Image4 is already exist for product {product_obj.sku}: {product_obj.image4}')
             continue
 
         url = f'https://imidgauto.bigbrain.com.ua:27015/Foto/{product_obj.sku}-0{i+1}.jpg'
