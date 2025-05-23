@@ -74,44 +74,25 @@ def upload_image(url, product_obj):
 
 
 def upload_images(product_obj):
-    for i in range(4):
-        if i + 1 == 1 and (product_obj.image != '' or product_obj.image is not None):
-            logger.info(f'Image is already exist for product {product_obj.sku}: {str(product_obj.image)}')
-            continue
-        if i + 1 == 2 and (product_obj.image2 != '' or product_obj.image2 is not None):
-            logger.info(f'Image2 is already exist for product {product_obj.sku}: {str(product_obj.image2)}')
-            continue
-        if i + 1 == 3 and (product_obj.image3 != '' or product_obj.image3 is not None):
-            logger.info(f'Image3 is already exist for product {product_obj.sku}: {str(product_obj.image3)}')
-            continue
-        if i + 1 == 4 and (product_obj.image4 != '' or product_obj.image4 is not None):
-            logger.info(f'Image4 is already exist for product {product_obj.sku}: {str(product_obj.image4)}')
+    image_fields = ['image', 'image2', 'image3', 'image4']
+
+    for i, field_name in enumerate(image_fields, start=1):
+        image_field = getattr(product_obj, field_name)
+
+        if image_field and str(image_field) != '':
+            logger.info(f'{field_name.capitalize()} already exists for product {product_obj.sku}: {image_field}')
             continue
 
-        url = f'https://imidgauto.bigbrain.com.ua:27015/Foto/{product_obj.sku}-0{i+1}.jpg'
-
-        # Проверка, не загружалось ли уже изображение для этого URL
+        url = f'https://imidgauto.bigbrain.com.ua:27015/Foto/{product_obj.sku}-0{i}.jpg'
         image_name = url.split('/')[-1][:300]
 
         try:
             response = requests.get(url)
-            response.raise_for_status()  # Проверка на успешный ответ (status_code 200)
-        except:
-            logger.error(f'Failed to download image from {url}')
+            response.raise_for_status()
+        except Exception as e:
+            logger.error(f'Failed to download image from {url}: {e}')
             continue
 
-        if response.status_code == 200:
-            if i + 1 == 1:
-                product_obj.image.save(image_name, ContentFile(response.content), save=True)
-                logger.info(f'Image uploaded successfully for product {product_obj.sku}')
-            if i + 1 == 2:
-                product_obj.image2.save(image_name, ContentFile(response.content), save=True)
-                logger.info(f'Image2 uploaded successfully for product {product_obj.sku}')
-            if i + 1 == 3:
-                product_obj.image3.save(image_name, ContentFile(response.content), save=True)
-                logger.info(f'Image3 uploaded successfully for product {product_obj.sku}')
-            if i + 1 == 4:
-                product_obj.image3.save(image_name, ContentFile(response.content), save=True)
-                logger.info(f'Image4 uploaded successfully for product {product_obj.sku}')
-        else:
-            logger.error(f'Failed to download image from {url}, HTTP status code: {response.status_code}')
+        # Save image to the appropriate field
+        getattr(product_obj, field_name).save(image_name, ContentFile(response.content), save=True)
+        logger.info(f'{field_name.capitalize()} uploaded successfully for product {product_obj.sku}')
