@@ -15,4 +15,6 @@ class CategoryAdmin(TreeAdmin, TranslatableAdmin):
 class ProductAdmin(TranslatableAdmin):
     list_select_related = ['category']
     search_fields = ['sku', 'translation__name']
+    list_display = ['name', 'created', 'updated']
+    list_filter = ['created', 'updated']
 
