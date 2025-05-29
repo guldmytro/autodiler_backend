@@ -431,7 +431,7 @@ class SendMagicLinkView(APIView):
 
         lang = 'ru/' if get_language() == 'ru' else ''
 
-        magic_link = f'{settings.CORS_ALLOWED_ORIGINS[2]}/{lang}account/login/confirm/{str(token)}'
+        magic_link = f'{settings.CORS_ALLOWED_ORIGINS[3]}/{lang}account/login/confirm/{str(token)}'
 
         if send_mail(
             subject='Avtodiler.com.ua: Ваше посилання для входу',
