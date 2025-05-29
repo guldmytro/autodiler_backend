@@ -27,6 +27,9 @@ from django.utils.translation import get_language
 from rest_framework_simplejwt.tokens import UntypedToken, RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError
 from profiles.models import Profile
+from django.core.cache import cache
+import hashlib
+import json
 
 
 logger = logging.getLogger(__name__)
@@ -97,13 +100,35 @@ class ProductViewSet(viewsets.ModelViewSet):
     ordering_fields = ['created', 'price']
     lookup_field = 'slug'
 
-    @method_decorator(cache_page(60 * 15))
-    def list(self, request):
-        return super().list(request)
+    def is_partner(self, request):
+        user = request.user
+        return user.is_authenticated and hasattr(user, 'profile') and user.profile.partner
 
-    @method_decorator(cache_page(60 * 15))
+    def get_cache_key(self, request, suffix="list", extra=""):
+        base = f"{suffix}:{'partner' if self.is_partner(request) else 'user'}"
+        query = json.dumps(request.query_params, sort_keys=True)
+        raw = f"{base}:{query}:{extra}"
+        return hashlib.md5(raw.encode()).hexdigest()
+
+    def list(self, request, *args, **kwargs):
+        cache_key = self.get_cache_key(request, "list")
+        cached_response = cache.get(cache_key)
+        if cached_response:
+            return Response(cached_response)
+
+        response = super().list(request, *args, **kwargs)
+        cache.set(cache_key, response.data, timeout=60 * 15)
+        return response
+
     def retrieve(self, request, slug=None):
-        return super().retrieve(request, slug)
+        cache_key = self.get_cache_key(request, "retrieve", extra=slug)
+        cached_response = cache.get(cache_key)
+        if cached_response:
+            return Response(cached_response)
+
+        response = super().retrieve(request, slug=slug)
+        cache.set(cache_key, response.data, timeout=60 * 15)
+        return response
 
     @action(detail=True, url_path='buy', methods=['post'],
             permission_classes=[CanPost])

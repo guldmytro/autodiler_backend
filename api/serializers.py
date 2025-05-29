@@ -34,6 +34,7 @@ class ProductSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     category = CategorySerializer()
     term_slug = serializers.SerializerMethodField()
     recommended_products = serializers.SerializerMethodField()
+    price = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
@@ -53,6 +54,15 @@ class ProductSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
             return obj.category.slug
         except:
             return None
+    
+    def get_price(self, obj):
+        request = self.context.get('request')
+        user = getattr(request, 'user', None)
+        if user and user.is_authenticated:
+            profile = getattr(user, 'profile', None)
+            if profile and profile.partner:
+                return obj.price_partner
+        return obj.price
 
 
 class OrderItemSerializer(serializers.ModelSerializer):

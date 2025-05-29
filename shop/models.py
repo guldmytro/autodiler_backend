@@ -45,8 +45,8 @@ class Product(TranslatableModel):
     slug = models.SlugField(verbose_name='Слаг',
                             unique=True, max_length=250)
     price = models.PositiveIntegerField(verbose_name='Ціна', blank=True)
-    price_old = models.PositiveIntegerField(verbose_name='Ціна стара', 
-                                            blank=True, null=True)
+    price_partner = models.PositiveIntegerField(verbose_name='Ціна оптова', 
+                                                blank=True, null=True)
     image = models.ImageField(upload_to='products/%Y/%m/%d/', blank=True,
                               verbose_name='Фото', null=True)
     image2 = models.ImageField(upload_to='products/%Y/%m/%d/', blank=True,
