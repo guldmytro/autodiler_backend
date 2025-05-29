@@ -22,6 +22,12 @@ from seo.models import SeoItem
 from django.contrib.postgres.search import TrigramSimilarity
 from django.db.models import Q
 import logging
+from .magic_link import MagicLinkToken
+from django.utils.translation import get_language
+from rest_framework_simplejwt.tokens import UntypedToken, RefreshToken
+from rest_framework_simplejwt.exceptions import TokenError
+from profiles.models import Profile
+
 
 logger = logging.getLogger(__name__)
 
@@ -408,3 +414,70 @@ def export_orders_to_xml(request):
 
     xml_string = tostring(root, encoding='utf-8')
     return HttpResponse(xml_string, content_type='application/xml')
+
+
+class SendMagicLinkView(APIView):
+    permission_classes = [CanPost,]
+
+    def post(self, request):
+        serializer = SendMagicLinkSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+        email = serializer.validated_data['email']
+
+        token = MagicLinkToken()
+        token['email'] = email
+
+        lang = 'ru/' if get_language() == 'ru' else ''
+
+        magic_link = f'{settings.CORS_ALLOWED_ORIGINS[2]}/{lang}account/login/confirm/{str(token)}'
+
+        if send_mail(
+            subject='Avtodiler.com.ua: Ваше посилання для входу',
+            message=f'Перейдіть по посиланню для входу в особистий кабінет: {magic_link}',
+            from_email='info.autodealer.ua@gmail.com',
+            recipient_list=[email]
+        ) == 1:
+            return Response({
+                'status': 'ok',
+                'message': 'Лист надіслано',
+                'email': email
+            }, status=status.HTTP_200_OK)
+        
+        return Response({'status': 'bad'}, status=status.HTTP_400_BAD_REQUEST)
+    
+
+class ConfirmMagicLink(APIView):
+    permission_classes = []
+
+
+    def get(self, request, token):
+        try:
+            magic_token = UntypedToken(token)
+            if magic_token.payload.get('token_type') != 'magic':
+                return Response({'error': 'Невірний тип токена'}, 
+                                status=status.HTTP_400_BAD_REQUEST)
+            email = magic_token.payload.get('email')
+            if not email:
+                return Response({'error': 'Email не знайдено в токені'}, 
+                                status=status.HTTP_400_BAD_REQUEST)
+            user, created = User.objects.get_or_create(
+                username=email,
+                defaults={'username': email, 'email': email}
+            )
+
+            if created:
+                Profile.objects.create(user=user)
+            
+            refresh = RefreshToken.for_user(user)
+
+            return Response({
+                'refresh': str(refresh),
+                'access': str(refresh.access_token),
+                'is_new_user': created
+            })
+
+        except TokenError:
+            return Response({'error': 'Невалідний або просрочений токен'}, 
+                            status=status.HTTP_400_BAD_REQUEST)

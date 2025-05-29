@@ -35,5 +35,7 @@ urlpatterns += [
          name='categories-sitemap'),
     path(r'seo/', SeoAPiView.as_view(), name='seo'),
     path(r'order.xml', export_orders_to_xml, name='orders-exchange'),
+    path(r'send-magic-link/', SendMagicLinkView.as_view(), name='send_magic_link'),
+    path(r'confirm-magic-link/<str:token>/', ConfirmMagicLink.as_view(), name='confirm_magic_link'),
 ]
 

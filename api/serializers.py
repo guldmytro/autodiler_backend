@@ -196,4 +196,5 @@ class SeoSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-
+class SendMagicLinkSerializer(serializers.Serializer):
+    email = serializers.EmailField()
