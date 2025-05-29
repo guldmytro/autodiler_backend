@@ -13,6 +13,7 @@ class Profile(models.Model):
                              blank=True)
     delivery = models.CharField(max_length=2, verbose_name='Доставка',
                                 blank=True)
+    partner = models.BooleanField(default=False, verbose_name='Партнер')
 
     created = models.DateTimeField(auto_now_add=True, verbose_name='Створено')
 
