@@ -39,7 +39,7 @@ class ProductSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ('id', 'sku', 'name', 'slug', 'description', 'price', 'image',
-                  'image2', 'image3', 'image4',
+                  'image2', 'image3', 'image4', 'image5',
                   'quantity', 'term_slug', 'category', 'producer', 'country',
                   'params', 'recommended_products', 'vin')
 
