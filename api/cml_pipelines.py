@@ -16,6 +16,7 @@ import logging
 from shop.models import *
 from .utils import get_or_create_category_tree, generate_slug, upload_image, upload_images
 from orders.models import Order
+from math import ceil
 
 
 logger = logging.getLogger(__name__)
@@ -197,13 +198,20 @@ class OfferPipeline(object):
             
             if len(item.prices) > 0:
                 try:
-                    new_price = int(item.prices[0].price_for_sku)
-                    if p.price != new_price:
-                        p.price = new_price
+                    price_updated = False
+                    price_partner_updated = False
+                    for price in item.prices:
+                        if price.price_type == 'Розничная' and not price_updated and p.price != price.price_for_sku:
+                            p.price = int(ceil(float(price.price_for_sku)))
+                            price_updated = True
+                        elif price.price_type == 'Отпускная Категория1' and not price_partner_updated and p.price_partner != price.price_for_sku:
+                            p.price_partner = int(ceil(float(price.price_for_sku)))
+                            price_partner_updated = True
+                    if price_updated or price_partner_updated:
                         p.save()
                 except:
                     pass
-            logger.info(f'Offer successfully updated for product {sku} (price = {p.price}, quantity = {p.quantity})')
+            logger.info(f'Offer successfully updated for product {sku} (price = {p.price}, price_partner = {p.price_partner}, quantity = {p.quantity})')
             upload_images(p)
         except Product.DoesNotExist:
             logger.warning(f'Offer with sku {sku} not found')
