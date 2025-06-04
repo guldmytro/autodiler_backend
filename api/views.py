@@ -93,7 +93,10 @@ class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.prefetch_related(
         'translation',
         # 'category__translation'
-    ).select_related('category').exclude(image__isnull=True).exclude(image='').filter(quantity__gt=0)
+    ).select_related('category').exclude(
+        Q(image__isnull=True) | Q(image=''),
+        Q(image2__isnull=True) | Q(image2='')
+    ).filter(quantity__gt=0)
     serializer_class = ProductSerializer
     filter_backends = [OrderingFilter, d_filters.DjangoFilterBackend]
     filterset_class = ProductFilter
@@ -105,9 +108,10 @@ class ProductViewSet(viewsets.ModelViewSet):
         return user.is_authenticated and hasattr(user, 'profile') and user.profile.partner
 
     def get_cache_key(self, request, suffix="list", extra=""):
+        language = get_language()
         base = f"{suffix}:{'partner' if self.is_partner(request) else 'user'}"
         query = json.dumps(request.query_params, sort_keys=True)
-        raw = f"{base}:{query}:{extra}"
+        raw = f"{language}:{base}:{query}:{extra}"
         return hashlib.md5(raw.encode()).hexdigest()
 
     def list(self, request, *args, **kwargs):
