@@ -191,6 +191,7 @@ class ProductMerchantSerializer(serializers.ModelSerializer):
             return obj.category.slug
         except:
             return None
+        
 
 
 class CategorySitemapSerializer(serializers.ModelSerializer):
