@@ -66,6 +66,7 @@ class Order(models.Model):
     created = models.DateTimeField(auto_now_add=True, verbose_name='Створено')
     updated = models.DateTimeField(auto_now=True, verbose_name='Оновлено')
     user_uuid = models.UUIDField(verbose_name='Ідентифікатор покупця', blank=True, null=True)
+    dont_callback = models.BooleanField(default=False, verbose_name='Не турбувати дзвінками')
     exported = models.BooleanField(default=False)
 
     class Meta:

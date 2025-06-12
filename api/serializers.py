@@ -86,7 +86,7 @@ class OrderSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
         model = Order
         fields = ('id', 'status', 'first_name', 'last_name', 'phone', 'email',
                   'delivery', 'city', 'nova_office', 'address', 'payment_method', 'paid',
-                  'comment', 'user_uuid', 'items', 'user', 'total_cost')
+                  'comment', 'user_uuid', 'items', 'user', 'total_cost', 'dont_callback')
 
     def create(self, validated_data):
         items_data = validated_data.pop('items')

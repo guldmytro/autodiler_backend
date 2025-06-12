@@ -24,7 +24,7 @@ class OrderItemInline(admin.TabularInline):
 class OrderAdmin(admin.ModelAdmin):
     list_display = ['id', 'status', 'first_name', 'last_name', 'email',
                     'phone', 'delivery', 'paid', 'created', 'updated']
-    list_filter = ['status', 'paid', 'liqpay_id', 'created', 'updated']
+    list_filter = ['status', 'paid', 'dont_callback', 'created', 'updated']
     inlines = [OrderItemInline]
 
 @admin.register(OrderOneClick)
