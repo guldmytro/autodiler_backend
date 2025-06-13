@@ -5,6 +5,7 @@ import requests
 import os
 import logging
 from django.conf import settings
+import json
 
 logger = logging.getLogger(__name__)
 
@@ -12,6 +13,16 @@ PUBKEY_PATH = os.path.join(settings.BASE_DIR, "monobank_pubkey.pem")
 
 def fix_base64_padding(b64_str: str) -> str:
     return b64_str + "=" * (-len(b64_str) % 4)
+
+def extract_pem_from_json(pubkey_json_str: str) -> str:
+    """
+    Приймає JSON-рядок і повертає PEM-декодований ключ.
+    """
+    parsed = json.loads(pubkey_json_str)
+    key_b64 = parsed.get("key")
+    if not key_b64:
+        raise ValueError("Поле 'key' відсутнє у відповіді Monobank")
+    return base64.b64decode(key_b64)
 
 
 def fetch_monobank_pubkey() -> str:
@@ -54,7 +65,9 @@ def verify_signature(signature_base64: str, body_bytes: bytes, pubkey_pem: str) 
     logger.info("🔐 Перевірка підпису...")
     try:
         signature_bytes = base64.b64decode(fix_base64_padding(signature_base64))
-        pub_key = ecdsa.VerifyingKey.from_pem(pubkey_pem)
+        print(3333333333)
+        print(extract_pem_from_json(pubkey_pem))
+        pub_key = ecdsa.VerifyingKey.from_pem(extract_pem_from_json(pubkey_pem))
         ok = pub_key.verify(signature_bytes, body_bytes, sigdecode=ecdsa.util.sigdecode_der, hashfunc=hashlib.sha256)
         logger.info("✅ Підпис валідний")
         return ok
