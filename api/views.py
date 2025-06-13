@@ -205,7 +205,7 @@ class OrderViewSet(viewsets.ModelViewSet):
                         'total': int(item.get_cost() * 100),
                         'unit': 'шт.',
                         'code': str(item.product.id),
-                        'icon': f'https://api.avtodiler.com.ua{str(item.product.image.url) if item.product.image else ''}'
+                        'icon': f"https://api.avtodiler.com.ua{item.product.image.url}" if item.product.image and item.product.image.name else ''
                     } for item in order.items.all()
                 ]
             }
