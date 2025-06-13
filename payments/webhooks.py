@@ -56,6 +56,8 @@ def liqpay_webhook(request):
 @require_POST
 def monobank_webhook(request):
     x_sign = request.headers.get("X-Sign")
+    logger.debug(f"X-Sign header raw: {x_sign}")
+    logger.debug(f"Raw body: {request.body}")
     if not x_sign:
         logger.warning("Відсутній заголовок X-Sign")
         return HttpResponse(status=400)
