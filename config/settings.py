@@ -271,7 +271,7 @@ except ImportError:
     # LiqPay
     LIQPAY_PUBLIC_KEY = 'some'
     LIQPAY_PRIVATE_KEY = 'key'
-    MONOBANK_TOKEN = 'mnXx38bK9hYn3hfY0_DLXqQ'
+    MONOBANK_TOKEN = 'key'
 
 # database trigram
 # sudo -i -u postgres
