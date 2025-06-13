@@ -5,6 +5,8 @@ from liqpay.liqpay3 import LiqPay
 from django.conf import settings
 from django.http import HttpResponse, JsonResponse
 from orders.models import Order
+import json
+from .verify_monobank_signature import verify_with_fallback
 
 
 logger = logging.getLogger(__name__)
@@ -53,4 +55,34 @@ def liqpay_webhook(request):
 @csrf_exempt
 @require_POST
 def monobank_webhook(request):
-    pass
+    x_sign = request.headers.get("X-Sign")
+    if not x_sign:
+        logger.warning("Відсутній заголовок X-Sign")
+        return HttpResponse(status=400)
+
+    if not verify_with_fallback(x_sign, request.body):
+        logger.warning("Невірний підпис від Monobank")
+        return HttpResponse(status=400)
+
+    try:
+        data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return HttpResponse(status=400)
+
+    reference = data.get("reference")
+    status_ = data.get("status")
+    invoice_id = data.get("invoiceId")
+
+    if status_ == "success" and reference:
+        try:
+            order = Order.objects.get(id=reference)
+            if not order.paid:
+                order.paid = True
+                order.monobank_id = invoice_id
+                order.save()
+                logger.info(f"Оплата успішна. Order ID: {reference}")
+        except Order.DoesNotExist:
+            logger.error(f"Order not found: {reference}")
+            return HttpResponse(status=404)
+
+    return JsonResponse({"status": "ok"})

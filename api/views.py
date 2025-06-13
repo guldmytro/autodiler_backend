@@ -30,6 +30,7 @@ from profiles.models import Profile
 from django.core.cache import cache
 import hashlib
 import json
+import requests
 
 
 logger = logging.getLogger(__name__)
@@ -171,6 +172,56 @@ class OrderViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         user = self.request.user if self.request.user.is_authenticated else None
         serializer.save(user=user)
+    
+    @action(detail=True, methods=['post'], url_path='get_monobank_link')
+    def get_monobank_link(self, request, pk=None):
+        order = self.get_object()
+
+        if order.paid:
+            return Response(
+                {'detail': 'Це замовлення вже оплачене.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        headers = {
+            'X-Token': settings.MONOBANK_TOKEN,
+            'Content-Type': 'application/json'
+        }
+
+        payload = {
+            'amount': int(order.get_total_cost() * 100),
+            'ccy': 980,
+            'redirectUrl': 'https://avtodiler.com.ua/checkout/success',
+            'webHookUrl': 'https://api.avtodiler.com.ua/payment/webhook-mono/',
+            'merchantPaymInfo': {
+                'reference': str(order.id),
+                'destination': f'Замовлення №{order.id}',
+                'customerEmails': [order.email],
+                'basketOrder': [
+                    {
+                        'name': item.product.name,
+                        'qty': item.quantity,
+                        'sum': int(item.price * 100),
+                        'total': int(item.get_cost() * 100),
+                        'unit': 'шт.',
+                        'code': str(item.product.id),
+                        'icon': str(item.product.image) if item.product.image else item.product.image2
+                    } for item in order.items.all()
+                ]
+            }
+        }
+
+        try:
+            response = requests.post(
+                'https://api.monobank.ua/api/merchant/invoice/create',
+                headers=headers,
+                json=payload,
+                timeout=10
+            )
+        except requests.RequestException as e:
+            return Response({'detail': str(e)}, status=status.HTTP_502_BAD_GATEWAY)
+        
+        return Response(response.json(), status=status.HTTP_200_OK)
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
