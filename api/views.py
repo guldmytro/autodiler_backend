@@ -13,7 +13,7 @@ from django_filters import rest_framework as d_filters
 from rest_framework.decorators import action
 from django.template.loader import render_to_string
 from django.conf import settings
-from django.core.mail import send_mail
+#from django.core.mail import send_mail
 from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
 from rest_framework import generics
@@ -154,14 +154,14 @@ class ProductViewSet(viewsets.ModelViewSet):
 
             logger.error(f'Помилка під час створвення замовлення в 1 клік: {e}')
             logger.error(f'phone: {str(phone).strip()} .')
-        try:
-            send_mail(subject,
-                        '',
-                        'info.autodealer.ua@gmail.com',
-                        to,
-                        html_message=message)
-        except:
-            pass
+        # try:
+        #     send_mail(subject,
+        #                 '',
+        #                 'info.autodealer.ua@gmail.com',
+        #                 to,
+        #                 html_message=message)
+        # except:
+        #     pass
         return Response({'status': 'ok'})
         return Response({'status': 'bad'})
 
@@ -268,13 +268,13 @@ class SendEmailView(APIView):
             })
             subject = 'Не знайшли потрібну деталь'
             to = settings.EMAIL_RECEPIENTS
-            try:
-                send_mail(subject,
-                            '',
-                            'info.autodealer.ua@gmail.com', to,
-                            html_message=message)
-            except:
-                pass
+            #try:
+            #    send_mail(subject,
+            #                '',
+            #                'info.autodealer.ua@gmail.com', to,
+            #                html_message=message)
+            #except:
+            #    pass
             return Response({'status': 'ok',
                                 'message': 'Email sent successfully'})
             return Response({'status': 'bad'},
@@ -298,15 +298,15 @@ class SendDSEmailView(APIView):
             })
             subject = 'Користувач хоче отримати прайс-лист для партнерів'
             to = settings.EMAIL_RECEPIENTS
-            try:
-                send_mail(subject,
-                            '',
-                            'info.autodealer.ua@gmail.com', to,
-                            html_message=message)
-            except:
-                pass
-            return Response({'status': 'ok',
-                                'message': 'Email sent successfully'})
+            #try:
+            #    send_mail(subject,
+            #                '',
+            #                'info.autodealer.ua@gmail.com', to,
+            #                html_message=message)
+            #except:
+            #    pass
+            #return Response({'status': 'ok',
+            #                    'message': 'Email sent successfully'})
             return Response({'status': 'bad'},
                             status=status.HTTP_400_BAD_REQUEST)
         else:
@@ -334,13 +334,13 @@ class TakeOfferEmailView(APIView):
             })
             subject = 'Користувач хоче отримати прайс-лист для партнерів'
             to = settings.EMAIL_RECEPIENTS
-            try:
-                send_mail(subject,
-                            '',
-                            'info.autodealer.ua@gmail.com', to,
-                            html_message=message)
-            except:
-                pass
+            #try:
+            #    send_mail(subject,
+            #                '',
+            #                'info.autodealer.ua@gmail.com', to,
+            #                html_message=message)
+            #except:
+            #    pass
             return Response({'status': 'ok',
                                 'message': 'Email sent successfully'})
             return Response({'status': 'bad'},
@@ -524,15 +524,15 @@ class SendMagicLinkView(APIView):
 
         magic_link = f'{settings.CORS_ALLOWED_ORIGINS[3]}/{lang}account/login/confirm/{str(token)}'
 
-        try:
-            send_mail(
-                subject='Avtodiler.com.ua: Ваше посилання для входу',
-                message=f'Перейдіть по посиланню для входу в особистий кабінет: {magic_link}',
-                from_email='info.autodealer.ua@gmail.com',
-                recipient_list=[email]
-            )
-        except:
-            pass
+        #try:
+        #    send_mail(
+        #        subject='Avtodiler.com.ua: Ваше посилання для входу',
+        #        message=f'Перейдіть по посиланню для входу в особистий кабінет: {magic_link}',
+        #        from_email='info.autodealer.ua@gmail.com',
+        #        recipient_list=[email]
+        #    )
+        #except:
+        #    pass
         return Response({
             'status': 'ok',
             'message': 'Лист надіслано',

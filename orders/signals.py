@@ -16,8 +16,8 @@ def create_profile(sender, instance, created, **kwargs):
         })
         subject = 'Нове замовлення'
         to = settings.EMAIL_RECEPIENTS
-        send_mail(subject,
-                  '',
-                  'info.autodealer.ua@gmail.com',
-                  to,
-                  html_message=message)
+        #send_mail(subject,
+        #          '',
+        #          'info.autodealer.ua@gmail.com',
+        #          to,
+        #          html_message=message)
