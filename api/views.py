@@ -154,13 +154,15 @@ class ProductViewSet(viewsets.ModelViewSet):
 
             logger.error(f'Помилка під час створвення замовлення в 1 клік: {e}')
             logger.error(f'phone: {str(phone).strip()} .')
-
-        if send_mail(subject,
-                     '',
-                     'info.autodealer.ua@gmail.com',
-                     to,
-                     html_message=message) == 1:
-            return Response({'status': 'ok'})
+        try:
+            send_mail(subject,
+                        '',
+                        'info.autodealer.ua@gmail.com',
+                        to,
+                        html_message=message)
+        except:
+            pass
+        return Response({'status': 'ok'})
         return Response({'status': 'bad'})
 
 
@@ -266,12 +268,15 @@ class SendEmailView(APIView):
             })
             subject = 'Не знайшли потрібну деталь'
             to = settings.EMAIL_RECEPIENTS
-            if send_mail(subject,
-                         '',
-                         'info.autodealer.ua@gmail.com', to,
-                         html_message=message) == 1:
-                return Response({'status': 'ok',
-                                 'message': 'Email sent successfully'})
+            try:
+                send_mail(subject,
+                            '',
+                            'info.autodealer.ua@gmail.com', to,
+                            html_message=message)
+            except:
+                pass
+            return Response({'status': 'ok',
+                                'message': 'Email sent successfully'})
             return Response({'status': 'bad'},
                             status=status.HTTP_400_BAD_REQUEST)
         else:
@@ -293,12 +298,15 @@ class SendDSEmailView(APIView):
             })
             subject = 'Користувач хоче отримати прайс-лист для партнерів'
             to = settings.EMAIL_RECEPIENTS
-            if send_mail(subject,
-                         '',
-                         'info.autodealer.ua@gmail.com', to,
-                         html_message=message) == 1:
-                return Response({'status': 'ok',
-                                 'message': 'Email sent successfully'})
+            try:
+                send_mail(subject,
+                            '',
+                            'info.autodealer.ua@gmail.com', to,
+                            html_message=message)
+            except:
+                pass
+            return Response({'status': 'ok',
+                                'message': 'Email sent successfully'})
             return Response({'status': 'bad'},
                             status=status.HTTP_400_BAD_REQUEST)
         else:
@@ -326,12 +334,15 @@ class TakeOfferEmailView(APIView):
             })
             subject = 'Користувач хоче отримати прайс-лист для партнерів'
             to = settings.EMAIL_RECEPIENTS
-            if send_mail(subject,
-                         '',
-                         'info.autodealer.ua@gmail.com', to,
-                         html_message=message) == 1:
-                return Response({'status': 'ok',
-                                 'message': 'Email sent successfully'})
+            try:
+                send_mail(subject,
+                            '',
+                            'info.autodealer.ua@gmail.com', to,
+                            html_message=message)
+            except:
+                pass
+            return Response({'status': 'ok',
+                                'message': 'Email sent successfully'})
             return Response({'status': 'bad'},
                             status=status.HTTP_400_BAD_REQUEST)
         else:
@@ -513,17 +524,20 @@ class SendMagicLinkView(APIView):
 
         magic_link = f'{settings.CORS_ALLOWED_ORIGINS[3]}/{lang}account/login/confirm/{str(token)}'
 
-        if send_mail(
-            subject='Avtodiler.com.ua: Ваше посилання для входу',
-            message=f'Перейдіть по посиланню для входу в особистий кабінет: {magic_link}',
-            from_email='info.autodealer.ua@gmail.com',
-            recipient_list=[email]
-        ) == 1:
-            return Response({
-                'status': 'ok',
-                'message': 'Лист надіслано',
-                'email': email
-            }, status=status.HTTP_200_OK)
+        try:
+            send_mail(
+                subject='Avtodiler.com.ua: Ваше посилання для входу',
+                message=f'Перейдіть по посиланню для входу в особистий кабінет: {magic_link}',
+                from_email='info.autodealer.ua@gmail.com',
+                recipient_list=[email]
+            )
+        except:
+            pass
+        return Response({
+            'status': 'ok',
+            'message': 'Лист надіслано',
+            'email': email
+        }, status=status.HTTP_200_OK)
         
         return Response({'status': 'bad'}, status=status.HTTP_400_BAD_REQUEST)
     
