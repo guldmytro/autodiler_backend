@@ -1,7 +1,7 @@
 <b>У вас нове замовлення {{ order.pk }}</b>
 
-<b>Посилання:</b> https://{{ base_url }}{{ order.get_absolute_url }}
-<b>Сума замовлення:</b> {{ order.get_total_cost }}
+<b>Посилання:</b> https://api.avtodiler.com.ua{{ order.get_absolute_url }}
+<b>Сума замовлення:</b> {{ order.get_total_cost }} грн.
 
 <b>Прізвище:</b> {{ order.last_name }}
 <b>Ім'я:</b> {{ order.first_name }}
@@ -9,6 +9,6 @@
 <b>E-mail:</b> {{ order.email }}
 <b>Доставка:</b> {{ order.get_delivery_display }}
 {% if order.delivery == 'nd' or order.delivery == 'xd' %}<b>Адреса:</b> {{ order.city }}, {{ order.nova_office }}{% endif %}
-<b>Оплата:</b> {{ order.get_payment_display }}
+<b>Оплата:</b> {{ order.get_payment_method_display }}
 
 <b>Потрібно передзвонити:</b> {% if order.dont_callback %}Ні{% else %}Так{% endif%}
