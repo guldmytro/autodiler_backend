@@ -11,4 +11,4 @@
 {% if order.delivery == 'nd' or order.delivery == 'xd' %}<b>Адреса:</b> {{ order.city }}, {{ order.nova_office }}{% endif %}
 <b>Оплата:</b> {{ order.get_payment_display }}
 
-<b>Потрібно передзвонити:</b> {% if order.dont_callback}Ні{% else %}Так{% end if%}
+<b>Потрібно передзвонити:</b> {% if order.dont_callback}Ні{% else %}Так{% endif%}
