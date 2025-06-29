@@ -3,7 +3,7 @@ from django.dispatch import receiver
 from .models import Order
 from django.template.loader import render_to_string
 from django.conf import settings
-from django.core.mail import send_mail
+from api.telegram import send_telegram_message
 
 
 @receiver(post_save, sender=Order)
@@ -16,8 +16,4 @@ def create_profile(sender, instance, created, **kwargs):
         })
         subject = 'Нове замовлення'
         to = settings.EMAIL_RECEPIENTS
-        #send_mail(subject,
-        #          '',
-        #          'info.autodealer.ua@gmail.com',
-        #          to,
-        #          html_message=message)
+        send_telegram_message(message)

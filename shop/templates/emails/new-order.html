@@ -1,50 +1,14 @@
-У вас нове <a href="https://{{ base_url }}{{ order.get_absolute_url }}">замовлення</a>
+<b>У вас нове замовлення {{ order.pk }}</b>
 
-<table>
-    <tbody>
-        <tr>
-            <th>Замовлення</th>
-            <td>{{ order.pk }}</td>
-        </tr>
-        <tr>
-            <th>Прізвище</th>
-            <td>{{ order.last_name }}</td>
-        </tr>
-        <tr>
-            <th>Ім'я</th>
-            <td>{{ order.first_name }}</td>
-        </tr>
-        <tr>
-            <th>Телефон</th>
-            <td>{{ order.phone }}</td>
-        </tr>
-        <tr>
-            <th>E-mail</th>
-            <td>{{ order.email }}</td>
-        </tr>
-        <tr>
-            <th>Доставка</th>
-            {% if order.delivery == 'nd' %}
-                <td>Нова пошта</td>
-            {% else %}
-                <td>Самовивіз</td>
-            {% endif %}
-        </tr>
-        {% if order.delivery == 'nd' %}
-            <tr>
-                <th>Адреса</th>
-                <td>{{ order.city }}, {{ order.nova_office }}</td>
-            </tr>
-        {% endif %}
-        <tr>
-            <th>Оплата</th>
-            {% if order.payment_method == 'od' %}
-                <td>При отриманні</td>
-            {% endif %}
-        </tr>
-        <tr>
-            <th>Коментар</th>
-            <td>{{ order.comment }}</td>
-        </tr>
-    </tbody>
-</table>
+<b>Посилання:</b> https://{{ base_url }}{{ order.get_absolute_url }}
+<b>Сума замовлення:</b> {{ order.get_total_cost }}
+
+<b>Прізвище:</b> {{ order.last_name }}
+<b>Ім'я:</b> {{ order.first_name }}
+<b>Телефон:</b> {{ order.phone }}
+<b>E-mail:</b> {{ order.email }}
+<b>Доставка:</b> {{ order.get_delivery_display }}
+{% if order.delivery == 'nd' or order.delivery == 'xd' %}<b>Адреса:</b> {{ order.city }}, {{ order.nova_office }}{% endif %}
+<b>Оплата:</b> {{ order.get_payment_display }}
+
+<b>Потрібно передзвонити:</b> {% if order.dont_callback}Ні{% else %}Так{% end if%}

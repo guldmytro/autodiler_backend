@@ -13,7 +13,7 @@ from django_filters import rest_framework as d_filters
 from rest_framework.decorators import action
 from django.template.loader import render_to_string
 from django.conf import settings
-#from django.core.mail import send_mail
+from .telegram import send_telegram_message
 from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
 from rest_framework import generics
@@ -154,15 +154,10 @@ class ProductViewSet(viewsets.ModelViewSet):
 
             logger.error(f'Помилка під час створвення замовлення в 1 клік: {e}')
             logger.error(f'phone: {str(phone).strip()} .')
-        # try:
-        #     send_mail(subject,
-        #                 '',
-        #                 'info.autodealer.ua@gmail.com',
-        #                 to,
-        #                 html_message=message)
-        # except:
-        #     pass
-        return Response({'status': 'ok'})
+        
+        if send_telegram_message(message) == 1:
+            return Response({'status': 'ok'})
+        
         return Response({'status': 'bad'})
 
 
@@ -268,15 +263,11 @@ class SendEmailView(APIView):
             })
             subject = 'Не знайшли потрібну деталь'
             to = settings.EMAIL_RECEPIENTS
-            #try:
-            #    send_mail(subject,
-            #                '',
-            #                'info.autodealer.ua@gmail.com', to,
-            #                html_message=message)
-            #except:
-            #    pass
-            return Response({'status': 'ok',
+
+            if send_telegram_message(message) == 1:
+                return Response({'status': 'ok',
                                 'message': 'Email sent successfully'})
+            
             return Response({'status': 'bad'},
                             status=status.HTTP_400_BAD_REQUEST)
         else:
@@ -298,15 +289,11 @@ class SendDSEmailView(APIView):
             })
             subject = 'Користувач хоче отримати прайс-лист для партнерів'
             to = settings.EMAIL_RECEPIENTS
-            #try:
-            #    send_mail(subject,
-            #                '',
-            #                'info.autodealer.ua@gmail.com', to,
-            #                html_message=message)
-            #except:
-            #    pass
-            #return Response({'status': 'ok',
-            #                    'message': 'Email sent successfully'})
+            
+            if send_telegram_message(message) == 1:
+                return Response({'status': 'ok',
+                                 'message': 'Email sent successfully'})
+            
             return Response({'status': 'bad'},
                             status=status.HTTP_400_BAD_REQUEST)
         else:
@@ -334,15 +321,10 @@ class TakeOfferEmailView(APIView):
             })
             subject = 'Користувач хоче отримати прайс-лист для партнерів'
             to = settings.EMAIL_RECEPIENTS
-            #try:
-            #    send_mail(subject,
-            #                '',
-            #                'info.autodealer.ua@gmail.com', to,
-            #                html_message=message)
-            #except:
-            #    pass
-            return Response({'status': 'ok',
+            if send_telegram_message(message) == 1:
+                return Response({'status': 'ok',
                                 'message': 'Email sent successfully'})
+            
             return Response({'status': 'bad'},
                             status=status.HTTP_400_BAD_REQUEST)
         else:
