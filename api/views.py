@@ -31,7 +31,7 @@ from django.core.cache import cache
 import hashlib
 import json
 import requests
-
+from sendpulse_mailer import send_mail
 
 logger = logging.getLogger(__name__)
 
@@ -506,20 +506,14 @@ class SendMagicLinkView(APIView):
 
         magic_link = f'{settings.CORS_ALLOWED_ORIGINS[3]}/{lang}account/login/confirm/{str(token)}'
 
-        #try:
-        #    send_mail(
-        #        subject='Avtodiler.com.ua: Ваше посилання для входу',
-        #        message=f'Перейдіть по посиланню для входу в особистий кабінет: {magic_link}',
-        #        from_email='info.autodealer.ua@gmail.com',
-        #        recipient_list=[email]
-        #    )
-        #except:
-        #    pass
-        return Response({
-            'status': 'ok',
-            'message': 'Лист надіслано',
-            'email': email
-        }, status=status.HTTP_200_OK)
+        if send_mail(subject='Avtodiler.com.ua: Ваше посилання для входу',
+                     message=f'Перейдіть по посиланню для входу в особистий кабінет: {magic_link}',
+                     recipient_list=[email]):
+            return Response({
+                'status': 'ok',
+                'message': 'Лист надіслано',
+                'email': email
+            }, status=status.HTTP_200_OK)
         
         return Response({'status': 'bad'}, status=status.HTTP_400_BAD_REQUEST)
     

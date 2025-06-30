@@ -268,12 +268,7 @@ CACHES = {
 try:
     from .local_settings import *
 except ImportError:
-    # LiqPay
-    LIQPAY_PUBLIC_KEY = 'some'
-    LIQPAY_PRIVATE_KEY = 'key'
-    MONOBANK_TOKEN = 'token'
-    TELEGRAM_BOT_TOKEN = 'token'
-    TELEGRAM_CHAT_ID = 'chatid'
+    pass
 
 # database trigram
 # sudo -i -u postgres
