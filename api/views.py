@@ -31,7 +31,7 @@ from django.core.cache import cache
 import hashlib
 import json
 import requests
-from sendpulse_mailer import send_mail
+from api.sendpulse_mailer import send_mail
 
 logger = logging.getLogger(__name__)
 
