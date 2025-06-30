@@ -214,3 +214,4 @@ ENV/
 # End of https://www.gitignore.io/api/macos,linux,django,python,pycharm
 
 monobank_pubkey.pem
+token.txt
