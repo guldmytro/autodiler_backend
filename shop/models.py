@@ -92,10 +92,20 @@ class Product(TranslatableModel):
         ]
 
     def __str__(self):
-        return f'{self.sku} ({self.price} грн., залишок - {self.quantity} шт.) - {self.name}'
+        quantity = self.quantity
+        if self.parent:
+            quantity = self.parent.quantity
+        return f'{self.sku} ({self.price} грн., залишок - {quantity} шт.) - {self.name}'
 
     def get_absolute_url(self):
         return f'{settings.CORS_ALLOWED_ORIGINS[3]}/uk/product-cat/{self.category.slug}/{self.slug}'
+            
+    def save(self, *args, **kwargs):
+        if self.parent:
+            self.id_1c = self.parent.id_1c
+            self.category = self.parent.category
+            self.quantity = 0
+        super().save(*args, **kwargs)
 
 
 class Color(TranslatableModel):

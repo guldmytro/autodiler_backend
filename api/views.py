@@ -52,7 +52,7 @@ class ProductFilter(d_filters.FilterSet):
 
     def filters_by_ids(self, queryset, name, value):
         ids = value.split(',')
-        return queryset.filter(id__in=ids)
+        return Product.objects.filter(id__in=ids)
 
     def filters_by_category_id__in(self, queryset, name, value):
         try:
@@ -114,7 +114,7 @@ class ProductViewSet(viewsets.ModelViewSet):
         query = json.dumps(request.query_params, sort_keys=True)
         raw = f"{language}:{base}:{query}:{extra}"
         return hashlib.md5(raw.encode()).hexdigest()
-
+    
     def list(self, request, *args, **kwargs):
         cache_key = self.get_cache_key(request, "list")
         cached_response = cache.get(cache_key)
@@ -159,6 +159,18 @@ class ProductViewSet(viewsets.ModelViewSet):
             return Response({'status': 'ok'})
         
         return Response({'status': 'bad'})
+
+class ProductWithColorViewSet(viewsets.ModelViewSet):
+    permission_classes = (IsAdminOrReadOnly,)
+    queryset = Product.objects.prefetch_related(
+        'translation',
+        # 'category__translation'
+    ).select_related('category').exclude(
+        Q(parent__image__isnull=True) | Q(parent__image=''),
+        Q(parent__image2__isnull=True) | Q(parent__image2='')
+    ).exclude(parent__isnull=True).filter(parent__quantity__gt=0)
+    serializer_class = ProductWithColorSerializer
+    lookup_field = 'slug'
 
 
 class OrderViewSet(viewsets.ModelViewSet):

@@ -10,6 +10,7 @@ from rest_framework_simplejwt.views import (
 
 router = SimpleRouter()
 router.register(r'products', ProductViewSet, basename='products')
+router.register(r'products-with-colors', ProductWithColorViewSet, basename='products-with-colors')
 router.register(r'orders', OrderViewSet, basename='orders')
 router.register(r'my-orders', MyOrderViewSet, basename='my-orders')
 router.register(r'category', CategoryViewSet, basename='category')
