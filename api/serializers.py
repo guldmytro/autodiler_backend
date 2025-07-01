@@ -143,7 +143,7 @@ class ProductSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     def get_image(self, obj):
         img = obj.image if not obj.parent else obj.parent.image
         if img:
-            return f'http://{settings.ALLOWED_HOSTS[2]}:8000{img.url}'
+            return f'http://{settings.ALLOWED_HOSTS[2]}{img.url}'
         return None
 
 
