@@ -34,6 +34,10 @@ class Category(MP_Node):
 
 
 class Product(TranslatableModel):
+    parent = models.ForeignKey('self', on_delete=models.CASCADE,
+                               blank=True, null=True, related_name='children')
+    color = models.ForeignKey('Color', on_delete=models.CASCADE,
+                              blank=True, null=True, related_name='products')
     id_1c = models.CharField(max_length=200, blank=True, null=True)
     sku = models.CharField(max_length=10, verbose_name='Артикул', unique=True)
     translation = TranslatedFields(
@@ -63,6 +67,7 @@ class Product(TranslatableModel):
         null=True
     )
     quantity = models.PositiveIntegerField(blank=True,
+                                           null=True,
                                            verbose_name='Кількість')
     category = models.ForeignKey(Category, on_delete=models.PROTECT,
                                  related_name='products',
@@ -93,3 +98,15 @@ class Product(TranslatableModel):
         return f'{settings.CORS_ALLOWED_ORIGINS[3]}/uk/product-cat/{self.category.slug}/{self.slug}'
 
 
+class Color(TranslatableModel):
+    translation = TranslatedFields(
+        name=models.CharField(max_length=40, verbose_name='Назва кольору')
+    )
+    hex_code = models.CharField(max_length=7, help_text="Наприклад: #FF0000")
+
+    class Meta:
+        verbose_name = "Колір"
+        verbose_name_plural = "Кольори"
+
+    def __str__(self):
+        return f"{self.name} ({self.hex_code})"
