@@ -4,6 +4,7 @@ import uuid
 from django.core.files.base import ContentFile
 import requests
 import logging
+from api.watermark import add_watermark_with_image_bytes
 
 logger = logging.getLogger(__name__)
 
@@ -93,6 +94,9 @@ def upload_images(product_obj):
             logger.error(f'Failed to download image from {url}: {e}')
             continue
 
-        # Save image to the appropriate field
-        getattr(product_obj, field_name).save(image_name, ContentFile(response.content), save=True)
+        # Накладаємо водяний знак на байти зображення
+        watermarked_content = add_watermark_with_image_bytes(response.content)
+
+        # Зберігаємо у поле моделі
+        getattr(product_obj, field_name).save(image_name, watermarked_content, save=True)
         logger.info(f'{field_name.capitalize()} uploaded successfully for product {product_obj.sku}')

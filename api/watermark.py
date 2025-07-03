@@ -45,6 +45,36 @@ def add_watermark_with_image(image_field, watermark_path='watermark.png', opacit
     watermarked.save(buffer, format='JPEG')
     return ContentFile(buffer.getvalue())
 
+
+def add_watermark_with_image_bytes(image_bytes, watermark_path='watermark.png', opacity=0.35):
+    base_image = Image.open(BytesIO(image_bytes)).convert("RGBA")
+    base_width, base_height = base_image.size
+
+    watermark = Image.open(watermark_path).convert("RGBA")
+    wm_width, wm_height = watermark.size
+
+    scale = min(base_width / wm_width, base_height / wm_height) * 0.88
+    new_size = (int(wm_width * scale), int(wm_height * scale))
+    watermark = watermark.resize(new_size, resample=Image.Resampling.LANCZOS)
+
+    alpha = watermark.split()[3]
+    alpha = ImageEnhance.Brightness(alpha).enhance(opacity)
+    watermark.putalpha(alpha)
+
+    layer = Image.new("RGBA", base_image.size, (0, 0, 0, 0))
+
+    x = (base_width - watermark.width) // 2
+    y = (base_height - watermark.height) // 2
+
+    layer.paste(watermark, (x, y), mask=watermark)
+
+    watermarked = Image.alpha_composite(base_image, layer).convert("RGB")
+
+    buffer = BytesIO()
+    watermarked.save(buffer, format='JPEG')
+    return ContentFile(buffer.getvalue())
+
+
 def test():
     image_fields = ['image', 'image2', 'image3', 'image4', 'image5']
     
