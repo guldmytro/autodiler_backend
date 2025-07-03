@@ -120,7 +120,6 @@ class ProductSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     def get_term_slug(self, obj):
         try:
             if not obj.parent:
-                print('no parent')
                 return obj.category.slug
             return f'{obj.parent.category.slug}/{obj.parent.slug}'
         except:
@@ -143,7 +142,7 @@ class ProductSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     def get_image(self, obj):
         img = obj.image if not obj.parent else obj.parent.image
         if img:
-            return f'http://{settings.ALLOWED_HOSTS[2]}{img.url}'
+            return f'https://{settings.ALLOWED_HOSTS[2]}{img.url}'
         return None
 
 

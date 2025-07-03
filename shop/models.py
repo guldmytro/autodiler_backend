@@ -61,6 +61,8 @@ class Product(TranslatableModel):
                                verbose_name='Фото', null=True)
     image5 = models.ImageField(upload_to='products/%Y/%m/%d/', blank=True,
                                verbose_name='Фото', null=True)
+    watermarked = models.BooleanField(default=False)
+
     image_source = models.URLField(
         verbose_name='Посилання на оригінальну картинку',
         blank=True,
