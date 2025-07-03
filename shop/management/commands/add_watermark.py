@@ -9,7 +9,7 @@ class Command(BaseCommand):
     help = 'watermarking product'
 
     def handle(self, *args, **options):
-        products = Product.objects.filter(watermarked=False, quantity__gt=0)[:1]
+        products = Product.objects.filter(watermarked=False, quantity__gt=0)[:150]
         image_fields = ['image', 'image2', 'image3', 'image4', 'image5']
     
         for product in products:
