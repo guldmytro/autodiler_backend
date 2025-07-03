@@ -9,7 +9,7 @@ class Command(BaseCommand):
     help = 'watermarking product'
 
     def handle(self, *args, **options):
-        products = Product.objects.filter(watermarked=False, quantity__gt=0)[:200]
+        products = Product.objects.filter(watermarked=False, quantity__gt=0)[:1]
         image_fields = ['image', 'image2', 'image3', 'image4', 'image5']
     
         for product in products:
@@ -19,6 +19,8 @@ class Command(BaseCommand):
                     watermarked = add_watermark_with_image(image)
                     filename = os.path.basename(image.name)
                     getattr(product, field).save(filename, watermarked, save=True)
+            product.watermarked = True
+            product.save()
         
 
 
