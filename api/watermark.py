@@ -18,7 +18,7 @@ def add_watermark_with_image(image_field, watermark_path='watermark.png', opacit
     wm_width, wm_height = watermark.size
 
     # Масштабуємо з ефектом contain
-    scale = min(base_width / wm_width, base_height / wm_height) * 0.88  # 50% від максимального розміру
+    scale = min(base_width / wm_width, base_height / wm_height) * 0.85  # 50% від максимального розміру
     new_size = (int(wm_width * scale), int(wm_height * scale))
     watermark = watermark.resize(new_size, resample=Image.Resampling.LANCZOS)
 
