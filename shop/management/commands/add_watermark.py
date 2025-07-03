@@ -9,10 +9,11 @@ class Command(BaseCommand):
     help = 'watermarking product'
 
     def handle(self, *args, **options):
-        products = Product.objects.filter(watermarked=False, quantity__gt=0)
+        products = Product.objects.filter(watermarked=False, quantity__lt=1)
         image_fields = ['image', 'image2', 'image3', 'image4', 'image5']
     
         for product in products:
+            print(product.pk)
             for field in image_fields:
                 image = getattr(product, field)
                 if image:
