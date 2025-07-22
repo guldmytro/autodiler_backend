@@ -94,9 +94,10 @@ def upload_images(product_obj):
             logger.error(f'Failed to download image from {url}: {e}')
             continue
 
-        # Накладаємо водяний знак на байти зображення
-        watermarked_content = add_watermark_with_image_bytes(response.content)
+        # Більше не накладаємо водяний знак — використовуємо зображення напряму
+        image_file = ContentFile(response.content)
 
         # Зберігаємо у поле моделі
-        getattr(product_obj, field_name).save(image_name, watermarked_content, save=True)
+        getattr(product_obj, field_name).save(image_name, image_file, save=True)
         logger.info(f'{field_name.capitalize()} uploaded successfully for product {product_obj.sku}')
+
