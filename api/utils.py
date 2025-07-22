@@ -76,6 +76,7 @@ def upload_image(url, product_obj):
 
 def upload_images(product_obj):
     image_fields = ['image', 'image2', 'image3', 'image4', 'image5']
+    print(product_obj.pk)
 
     for i, field_name in enumerate(image_fields, start=1):
         image_field = getattr(product_obj, field_name)
