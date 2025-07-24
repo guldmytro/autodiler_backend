@@ -32,6 +32,7 @@ import hashlib
 import json
 import requests
 from api.sendpulse_mailer import send_mail
+from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
@@ -382,7 +383,9 @@ class ProductSitemap(generics.ListAPIView):
 
 
 class ProductMerchant(generics.ListAPIView):
-    queryset = Product.objects.exclude(image__isnull=True).exclude(image='').filter(quantity__gt=0)
+    queryset = Product.objects.exclude(image__isnull=True).exclude(image='')\
+                      .filter(quantity__gt=0)\
+                      .filter(created__lte=datetime(2025, 7, 23, 23, 59, 59))
     serializer_class = ProductMerchantSerializer
     permission_classes = (IsAdminOrReadOnly,)
     pagination_class = NoPagination
