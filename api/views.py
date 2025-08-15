@@ -384,8 +384,8 @@ class ProductSitemap(generics.ListAPIView):
 
 class ProductMerchant(generics.ListAPIView):
     queryset = Product.objects.exclude(image__isnull=True).exclude(image='')\
-                      .filter(quantity__gt=0)\
-                      .filter(created__lte=datetime(2025, 7, 23, 23, 59, 59))
+                      .filter(quantity__gt=0)
+                      #.filter(created__lte=datetime(2025, 7, 23, 23, 59, 59))
     serializer_class = ProductMerchantSerializer
     permission_classes = (IsAdminOrReadOnly,)
     pagination_class = NoPagination
