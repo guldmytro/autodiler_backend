@@ -68,6 +68,7 @@ class Order(models.Model):
     user_uuid = models.UUIDField(verbose_name='Ідентифікатор покупця', blank=True, null=True)
     dont_callback = models.BooleanField(default=False, verbose_name='Не турбувати дзвінками')
     exported = models.BooleanField(default=False)
+    passed_to_google = models.BooleanField(default=False, verbose_name='Передано в Google')
 
     class Meta:
         verbose_name = 'Замовлення'

@@ -201,7 +201,7 @@ class OrderViewSet(viewsets.ModelViewSet):
         payload = {
             'amount': int(order.get_total_cost() * 100),
             'ccy': 980,
-            'redirectUrl': 'https://avtodiler.com.ua/checkout/success',
+            'redirectUrl': f'https://avtodiler.com.ua/checkout/success/{order.id}',
             'webHookUrl': 'https://api.avtodiler.com.ua/payment/webhook-mono/',
             'merchantPaymInfo': {
                 'reference': str(order.id),
@@ -566,3 +566,21 @@ class ConfirmMagicLink(APIView):
         except TokenError:
             return Response({'error': 'Невалідний або просрочений токен'}, 
                             status=status.HTTP_400_BAD_REQUEST)
+
+
+class GoogleOrderViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Order.objects.all()
+    serializer_class = GoogleOrderSerializer
+    permission_classes = (IsAdminOrReadOnly,)
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+
+        serializer = self.get_serializer(instance)
+        response = Response(serializer.data, status=status.HTTP_200_OK)
+
+        if not instance.passed_to_google:
+            instance.passed_to_google = True
+            instance.save(update_fields=['passed_to_google'])
+
+        return response

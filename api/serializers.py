@@ -290,3 +290,20 @@ class SeoSerializer(serializers.ModelSerializer):
 
 class SendMagicLinkSerializer(serializers.Serializer):
     email = serializers.EmailField()
+
+
+class GoogleOrderItemSerializer(serializers.ModelSerializer):
+    product = ProductSerializer(many=False, read_only=True)
+
+    class Meta:
+        model = OrderItem
+        fields = ['id', 'product', 'price', 'quantity', 'get_cost']
+
+
+class GoogleOrderSerializer(serializers.ModelSerializer):
+    items = GoogleOrderItemSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Order
+        fields = ('id', 'items', 'get_total_cost',
+                  'exported', 'passed_to_google')

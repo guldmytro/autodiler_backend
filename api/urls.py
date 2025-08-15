@@ -16,6 +16,7 @@ router.register(r'my-orders', MyOrderViewSet, basename='my-orders')
 router.register(r'category', CategoryViewSet, basename='category')
 router.register(r'faq', FaqViewSet, basename='faq')
 router.register(r'posts', BlogViewSet, basename='posts')
+router.register(r'google-orders', GoogleOrderViewSet, basename='google-orders')
 
 urlpatterns = router.urls
 urlpatterns += [
