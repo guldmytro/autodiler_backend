@@ -241,6 +241,7 @@ class OrderPipeline(object):
         }
 
     def yield_item(self):
+        logger.info(f'Yielding orders for export - {Order.objects.filter(exported=False).count()} orders')
         for order in Order.objects.filter(exported=False):
             yield order
 
