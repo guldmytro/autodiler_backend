@@ -5,7 +5,6 @@
 <b>Прізвище:</b> {{ order.last_name }}
 <b>Ім'я:</b> {{ order.first_name }}
 <b>Телефон:</b> {{ order.phone }}
-<b>E-mail:</b> {{ order.email }}
 <b>Доставка:</b> {{ order.get_delivery_display }}
 {% if order.delivery == 'nd' or order.delivery == 'xd' %}<b>Адреса:</b> {{ order.city }}, {{ order.nova_office }}{% endif %}
 <b>Оплата:</b> {{ order.get_payment_method_display }}
