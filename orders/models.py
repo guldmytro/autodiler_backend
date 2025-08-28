@@ -37,7 +37,7 @@ class Order(models.Model):
     first_name = models.CharField(max_length=50, verbose_name='Ім\'я')
     last_name = models.CharField(max_length=50, verbose_name='Прізвище')
     phone = models.CharField(max_length=100, verbose_name='Телефон')
-    email = models.EmailField(verbose_name='E-mail')
+    email = models.EmailField(verbose_name='E-mail', default='avtoodiler@gmail.com')
 
     delivery = models.CharField(max_length=2,
                                 choices=Delivery.choices,
