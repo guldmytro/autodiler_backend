@@ -98,7 +98,7 @@ class ProductViewSet(viewsets.ModelViewSet):
     ).select_related('category').exclude(
         Q(image__isnull=True) | Q(image=''),
         Q(image2__isnull=True) | Q(image2='')
-    ).filter(quantity__gt=0)
+    ).filter(quantity__gt=0).filter(category__visible=True)
     serializer_class = ProductSerializer
     filter_backends = [OrderingFilter, d_filters.DjangoFilterBackend]
     filterset_class = ProductFilter
@@ -236,7 +236,7 @@ class OrderViewSet(viewsets.ModelViewSet):
 
 class CategoryViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAdminOrReadOnly,)
-    queryset = Category.objects.all()
+    queryset = Category.objects.filter(visible=True)
     serializer_class = CategorySerializer
     lookup_field = 'slug'
 
@@ -384,7 +384,7 @@ class ProductSitemap(generics.ListAPIView):
 
 class ProductMerchant(generics.ListAPIView):
     queryset = Product.objects.exclude(image__isnull=True).exclude(image='')\
-                      .filter(quantity__gt=0)
+                      .filter(quantity__gt=0).filter(category__visible=True)
                       #.filter(created__lte=datetime(2025, 7, 23, 23, 59, 59))
     serializer_class = ProductMerchantSerializer
     permission_classes = (IsAdminOrReadOnly,)
@@ -396,7 +396,7 @@ class ProductMerchant(generics.ListAPIView):
 
 
 class CategorySitemap(generics.ListAPIView):
-    queryset = Category.objects.all()
+    queryset = Category.objects.filter(visible=True)
     serializer_class = CategorySitemapSerializer
     permission_classes = (IsAdminOrReadOnly,)
     pagination_class = NoPagination
