@@ -72,7 +72,7 @@ class Product(TranslatableModel):
     quantity = models.PositiveIntegerField(blank=True,
                                            null=True,
                                            verbose_name='Кількість')
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL,
+    category = models.ForeignKey(Category, on_delete=models.PROTECT,
                                  related_name='products',
                                  verbose_name='Категорія')
     producer = models.CharField(max_length=50, verbose_name='Виробник',
