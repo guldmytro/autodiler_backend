@@ -21,6 +21,7 @@ class Category(MP_Node):
     updated = models.DateTimeField(auto_now=True)
     is_car_brand = models.BooleanField(verbose_name='Бренд машины?',
                                        default=False)
+    visible = models.BooleanField(default=True)
 
     class Meta:
         verbose_name = 'Категорія'
@@ -71,7 +72,7 @@ class Product(TranslatableModel):
     quantity = models.PositiveIntegerField(blank=True,
                                            null=True,
                                            verbose_name='Кількість')
-    category = models.ForeignKey(Category, on_delete=models.PROTECT,
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL,
                                  related_name='products',
                                  verbose_name='Категорія')
     producer = models.CharField(max_length=50, verbose_name='Виробник',
