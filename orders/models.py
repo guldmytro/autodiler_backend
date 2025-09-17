@@ -69,6 +69,7 @@ class Order(models.Model):
     dont_callback = models.BooleanField(default=False, verbose_name='Не турбувати дзвінками')
     exported = models.BooleanField(default=False)
     passed_to_google = models.BooleanField(default=False, verbose_name='Передано в Google')
+    utm = models.TextField(blank=True, null=True, verbose_name='UTM мітки')
 
     class Meta:
         verbose_name = 'Замовлення'
