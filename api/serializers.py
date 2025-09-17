@@ -9,6 +9,7 @@ from shop.recommender import Recommender
 from django.contrib.auth.models import User
 from seo.models import SeoItem
 from django.conf import settings
+from django.db.models import Q
 
 
 class CategorySerializer(DynamicFieldsMixin, serializers.ModelSerializer):
@@ -92,13 +93,53 @@ class ProductWithColorSerializer(serializers.ModelSerializer):
         siblings_qs = Product.objects.filter(parent=obj.parent)
         return ChildrenSerializer(siblings_qs, many=True, context=self.context).data
 
+class ProductMiniSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
+    term_slug = serializers.SerializerMethodField()
+    price = serializers.SerializerMethodField()
+    quantity = serializers.SerializerMethodField()
+    image = serializers.SerializerMethodField()
 
+    class Meta:
+        model = Product
+        fields = ('id', 'sku', 'name', 'slug', 'price', 'image',
+                  'quantity', 'term_slug',
+                  'params', 'vin')
+
+
+    def get_term_slug(self, obj):
+        try:
+            if not obj.parent:
+                return obj.category.slug
+            return f'{obj.parent.category.slug}/{obj.parent.slug}'
+        except:
+            return None
+    
+    def get_price(self, obj):
+        request = self.context.get('request')
+        user = getattr(request, 'user', None)
+        if user and user.is_authenticated:
+            profile = getattr(user, 'profile', None)
+            if profile and profile.partner:
+                return obj.price_partner
+        return obj.price
+    
+    def get_quantity(self, obj):
+        if not obj.parent:
+            return obj.quantity
+        return obj.parent.quantity
+    
+    def get_image(self, obj):
+        img = obj.image if not obj.parent else obj.parent.image
+        if img:
+            return f'https://{settings.ALLOWED_HOSTS[2]}{img.url}'
+        return None
 
 
 class ProductSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     category = CategorySerializer()
     term_slug = serializers.SerializerMethodField()
     recommended_products = serializers.SerializerMethodField()
+    same_category_products = serializers.SerializerMethodField()
     price = serializers.SerializerMethodField()
     quantity = serializers.SerializerMethodField()
     children = ChildrenSerializer(many=True)
@@ -109,7 +150,7 @@ class ProductSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
         fields = ('id', 'sku', 'name', 'slug', 'description', 'price', 'image',
                   'image2', 'image3', 'image4', 'image5',
                   'quantity', 'term_slug', 'category', 'producer', 'country',
-                  'params', 'recommended_products', 'vin', 'children')
+                  'params', 'recommended_products', 'same_category_products', 'vin', 'children')
 
     def get_recommended_products(self, obj):
         request = self.context.get('request')
@@ -144,7 +185,14 @@ class ProductSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
         if img:
             return f'https://{settings.ALLOWED_HOSTS[2]}{img.url}'
         return None
-
+    
+    def get_same_category_products(self, obj):
+        qs = Product.objects.filter(category=obj.category,).exclude(id=obj.id).exclude(
+            Q(image__isnull=True) | Q(image=''),
+            Q(image2__isnull=True) | Q(image2='')
+        ).filter(quantity__gt=0).filter(category__visible=True)[:12]
+        return ProductMiniSerializer(qs, many=True, context=self.context).data
+    
 
 class OrderItemSerializer(serializers.ModelSerializer):
 
