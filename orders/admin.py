@@ -2,6 +2,26 @@ from django.contrib import admin
 from .models import Order, OrderItem, OrderOneClick
 from django.utils.html import format_html
 from django.urls import reverse
+from django.utils.translation import gettext_lazy as _
+
+
+
+class HasUtmFilter(admin.SimpleListFilter):
+    title = _('UTM мітки')
+    parameter_name = 'has_utm'
+
+    def lookups(self, request, model_admin):
+        return (
+            ('yes', ('Так')),
+            ('no', ('Ні')),
+        )
+
+    def queryset(self, request, queryset):
+        if self.value() == 'yes':
+            return queryset.exclude(utm__isnull=True).exclude(utm__exact='')
+        if self.value() == 'no':
+            return queryset.filter(utm__isnull=True) | queryset.filter(utm__exact='')
+        return queryset
 
 
 class OrderItemInline(admin.TabularInline):
@@ -24,7 +44,7 @@ class OrderItemInline(admin.TabularInline):
 class OrderAdmin(admin.ModelAdmin):
     list_display = ['id', 'status', 'first_name', 'last_name', 'email',
                     'phone', 'delivery', 'paid', 'created', 'updated']
-    list_filter = ['status', 'paid', 'dont_callback', 'created', 'updated']
+    list_filter = ['status', 'paid', 'dont_callback', HasUtmFilter, 'created', 'updated']
     inlines = [OrderItemInline]
 
 @admin.register(OrderOneClick)
