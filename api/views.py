@@ -286,6 +286,29 @@ class SendEmailView(APIView):
         else:
             return Response(serializer.errors,
                             status=status.HTTP_400_BAD_REQUEST)
+        
+
+class DontLeaveView(APIView):
+    permission_classes = [CanPost,]
+
+    def post(self, request, *args, **kwargs):
+        serializer = DontLeaveSerializer(data=request.data)
+        if serializer.is_valid():
+            phone = serializer.validated_data['phone']
+            message = render_to_string('emails/dontLeave.html', {
+                'phone': phone
+            })
+            to = settings.EMAIL_RECEPIENTS
+
+            if send_telegram_message(message) == 1:
+                return Response({'status': 'ok',
+                                'message': 'Email sent successfully'})
+            
+            return Response({'status': 'bad'},
+                            status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(serializer.errors,
+                            status=status.HTTP_400_BAD_REQUEST)
 
 
 class SendDSEmailView(APIView):

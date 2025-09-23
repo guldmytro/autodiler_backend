@@ -265,6 +265,10 @@ class EmailSerializer(serializers.Serializer):
     phone = serializers.CharField()
 
 
+class DontLeaveSerializer(serializers.Serializer):
+    phone = serializers.CharField()
+
+
 class DropshippingEmailSerializer(serializers.Serializer):
     email = serializers.CharField()
     phone = serializers.CharField()

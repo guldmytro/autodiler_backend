@@ -21,6 +21,7 @@ router.register(r'google-orders', GoogleOrderViewSet, basename='google-orders')
 urlpatterns = router.urls
 urlpatterns += [
     path('feadback/', SendEmailView.as_view(), name='feadback'),
+    path('dontleave/', DontLeaveView.as_view(), name='dontleave'),
     path('ds-1/', SendDSEmailView.as_view(), name='ds-1'),
     path('ds-2/', TakeOfferEmailView.as_view(), name='ds-2'),
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
